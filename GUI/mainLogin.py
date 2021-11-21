@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'practice_UI.ui'
+# Form implementation generated from reading ui file 'login.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -15,6 +15,11 @@ class Ui_Login_Dialog(object):
     def setupUi(self, Login_Dialog):
         Login_Dialog.setObjectName("Login_Dialog")
         Login_Dialog.resize(477, 620)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(Login_Dialog.sizePolicy().hasHeightForWidth())
+        Login_Dialog.setSizePolicy(sizePolicy)
         Login_Dialog.setStyleSheet("background-color: rgb(54, 54, 54);")
         self.pEdit = QtWidgets.QLineEdit(Login_Dialog)
         self.pEdit.setGeometry(QtCore.QRect(200, 340, 181, 31))
@@ -64,7 +69,7 @@ class Ui_Login_Dialog(object):
 
     def retranslateUi(self, Login_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Login_Dialog.setWindowTitle(_translate("Login_Dialog", "Dialog"))
+        Login_Dialog.setWindowTitle(_translate("Login_Dialog", "Welcome to Vapor"))
         self.label.setText(_translate("Login_Dialog", "Please enter your username and password."))
         self.uLabel.setText(_translate("Login_Dialog", "Username"))
         self.greeting.setText(_translate("Login_Dialog", "Welcome!"))
@@ -72,13 +77,3 @@ class Ui_Login_Dialog(object):
         self.loginButton.setText(_translate("Login_Dialog", "Login"))
         self.label_2.setText(_translate("Login_Dialog", "Don\'t have an account?"))
         self.signUpButton.setText(_translate("Login_Dialog", "Create Account"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Login_Dialog = QtWidgets.QDialog()
-    ui = Ui_Login_Dialog()
-    ui.setupUi(Login_Dialog)
-    Login_Dialog.show()
-    sys.exit(app.exec_())

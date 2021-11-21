@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'createacc.ui'
+# Form implementation generated from reading ui file 'createAcc.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -64,20 +64,10 @@ class Ui_Sign_Up_Dialog(object):
 
     def retranslateUi(self, Sign_Up_Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Sign_Up_Dialog.setWindowTitle(_translate("Sign_Up_Dialog", "Dialog"))
+        Sign_Up_Dialog.setWindowTitle(_translate("Sign_Up_Dialog", "Create Account"))
         self.label.setText(_translate("Sign_Up_Dialog", "Please enter your username and password."))
         self.uLabel.setText(_translate("Sign_Up_Dialog", "Username"))
         self.greeting.setText(_translate("Sign_Up_Dialog", "Sign Up"))
         self.pLabel.setText(_translate("Sign_Up_Dialog", "Password"))
         self.loginButton.setText(_translate("Sign_Up_Dialog", "Create Account"))
         self.pLabel_2.setText(_translate("Sign_Up_Dialog", "Confirm Password"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    Sign_Up_Dialog = QtWidgets.QDialog()
-    ui = Ui_Sign_Up_Dialog()
-    ui.setupUi(Sign_Up_Dialog)
-    Sign_Up_Dialog.show()
-    sys.exit(app.exec_())
