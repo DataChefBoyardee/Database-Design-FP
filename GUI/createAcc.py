@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'createAcc.ui'
+# Form implementation generated from reading ui file 'createacc.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -14,22 +14,22 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Sign_Up_Dialog(object):
     def setupUi(self, Sign_Up_Dialog):
         Sign_Up_Dialog.setObjectName("Sign_Up_Dialog")
-        Sign_Up_Dialog.resize(477, 620)
+        Sign_Up_Dialog.resize(600, 800)
         Sign_Up_Dialog.setStyleSheet("background-color: rgb(54, 54, 54);")
         self.pEdit = QtWidgets.QLineEdit(Sign_Up_Dialog)
-        self.pEdit.setGeometry(QtCore.QRect(210, 310, 181, 31))
+        self.pEdit.setGeometry(QtCore.QRect(260, 430, 181, 31))
         self.pEdit.setEchoMode(QtWidgets.QLineEdit.Password)
         self.pEdit.setObjectName("pEdit")
         self.label = QtWidgets.QLabel(Sign_Up_Dialog)
-        self.label.setGeometry(QtCore.QRect(100, 210, 311, 20))
+        self.label.setGeometry(QtCore.QRect(100, 330, 391, 21))
         self.label.setStyleSheet("color:rgb(255, 255, 255); font-size:12pt;")
         self.label.setObjectName("label")
         self.uLabel = QtWidgets.QLabel(Sign_Up_Dialog)
-        self.uLabel.setGeometry(QtCore.QRect(70, 260, 91, 20))
+        self.uLabel.setGeometry(QtCore.QRect(120, 380, 121, 21))
         self.uLabel.setStyleSheet("color:rgb(255, 255, 255); font-size:15pt;")
         self.uLabel.setObjectName("uLabel")
         self.greeting = QtWidgets.QLabel(Sign_Up_Dialog)
-        self.greeting.setGeometry(QtCore.QRect(160, 140, 171, 41))
+        self.greeting.setGeometry(QtCore.QRect(210, 250, 201, 51))
         font = QtGui.QFont()
         font.setFamily("MS Sans Serif")
         font.setPointSize(27)
@@ -39,23 +39,23 @@ class Ui_Sign_Up_Dialog(object):
         self.greeting.setWordWrap(False)
         self.greeting.setObjectName("greeting")
         self.pLabel = QtWidgets.QLabel(Sign_Up_Dialog)
-        self.pLabel.setGeometry(QtCore.QRect(70, 310, 91, 20))
+        self.pLabel.setGeometry(QtCore.QRect(120, 430, 121, 21))
         self.pLabel.setStyleSheet("color:rgb(255, 255, 255); font-size:15pt;")
         self.pLabel.setObjectName("pLabel")
         self.loginButton = QtWidgets.QPushButton(Sign_Up_Dialog)
-        self.loginButton.setGeometry(QtCore.QRect(150, 420, 201, 41))
+        self.loginButton.setGeometry(QtCore.QRect(200, 540, 201, 41))
         self.loginButton.setStyleSheet("color:rgb(255, 255, 255)")
         self.loginButton.setObjectName("loginButton")
         self.uEdit = QtWidgets.QLineEdit(Sign_Up_Dialog)
-        self.uEdit.setGeometry(QtCore.QRect(210, 260, 181, 31))
+        self.uEdit.setGeometry(QtCore.QRect(260, 380, 181, 31))
         self.uEdit.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.uEdit.setObjectName("uEdit")
         self.pLabel_2 = QtWidgets.QLabel(Sign_Up_Dialog)
-        self.pLabel_2.setGeometry(QtCore.QRect(30, 360, 161, 20))
+        self.pLabel_2.setGeometry(QtCore.QRect(50, 480, 201, 21))
         self.pLabel_2.setStyleSheet("color:rgb(255, 255, 255); font-size:15pt;")
         self.pLabel_2.setObjectName("pLabel_2")
         self.pEdit_2 = QtWidgets.QLineEdit(Sign_Up_Dialog)
-        self.pEdit_2.setGeometry(QtCore.QRect(210, 360, 181, 31))
+        self.pEdit_2.setGeometry(QtCore.QRect(260, 480, 181, 31))
         self.pEdit_2.setEchoMode(QtWidgets.QLineEdit.Password)
         self.pEdit_2.setObjectName("pEdit_2")
 
