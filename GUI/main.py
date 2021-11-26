@@ -4,6 +4,7 @@
 #
 #-----------------------------------------------------------------------------------------------------------
 import sys 
+import os
 from mainLogin import Ui_Login_Dialog
 from createAcc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
@@ -95,7 +96,9 @@ class Main_Window(qwin, Ui_MainWindow):
         self.windows.append(window)
         
 # App startup.
+os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = 1
 app = qapp(sys.argv)
+qapp.setAttribute(qtc.Qt.AA_EnableHighDpiScaling)
 mainWindow = Login()
 widget = qtw.QStackedWidget()
 layout = QVBoxLayout()
