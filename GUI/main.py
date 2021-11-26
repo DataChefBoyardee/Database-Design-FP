@@ -6,7 +6,7 @@
 import sys 
 import os
 from mainLogin import Ui_Login_Dialog
-from createAcc import Ui_Sign_Up_Dialog
+from createacc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
 from PyQt5 import QtWidgets as qtw
@@ -96,9 +96,9 @@ class Main_Window(qwin, Ui_MainWindow):
         self.windows.append(window)
         
 # App startup.
-os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = 1
 app = qapp(sys.argv)
-qapp.setAttribute(qtc.Qt.AA_EnableHighDpiScaling)
+qtw.qapp.setAttribute(qtc.Qt.AA_EnableHighDpiScaling, True)
+qtw.qapp.setAttribute(qtc.Qt.AA_UseHighDpiPixmaps, True)
 mainWindow = Login()
 widget = qtw.QStackedWidget()
 layout = QVBoxLayout()
