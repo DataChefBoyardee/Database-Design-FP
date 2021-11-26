@@ -5,21 +5,20 @@
 #-----------------------------------------------------------------------------------------------------------
 import sys 
 from mainLogin import Ui_Login_Dialog
-from createAcc import Ui_Sign_Up_Dialog
+from createacc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
-from PyQt5.QtWidgets import QDialog as qd, QApplication as qapp, QMainWindow as qwin
-import psycopg2
-import steamspypi
+from PyQt5.QtWidgets import QDialog as qd, QApplication as qapp, QLayout, QMainWindow as qwin, QVBoxLayout
 
 # Class implementing the main login page.
 class Login(qd, Ui_Login_Dialog):
     def __init__(self):
         super(Login, self).__init__()
         self.setupUi(self)
-        self.setFixedSize(477, 620)
+        self.setFixedSize(600, 800)
+
         self.loginButton.clicked.connect(self.authenticate)
         self.loginButton.clicked.connect(self.goToMainWindow)
         self.signUpButton.clicked.connect(self.goToCreateAcc)
@@ -53,7 +52,7 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
     def __init__(self):
         super(CreateAcc, self).__init__()
         self.setupUi(self)
-        self.setFixedSize(477, 620)
+        self.setFixedSize(600, 800)
 
         self.loginButton.clicked.connect(self.createAccFunction)
     
@@ -95,59 +94,12 @@ class Main_Window(qwin, Ui_MainWindow):
         window.show()
         self.windows.append(window)
         
-#Database Connection
-def connection(data):
-    #Connect to db
-    con = psycopg2.connect(
-        host="localhost", 
-        database="FP",
-        user="postgres",
-        password="AWEsome1",
-        port=5432
-    )
-    gappid = data['appid']
-    gname = data['name']
-    gdev = data['developer']
-    gpub = data['publisher']
-    ggenre = data['genre']
-    #print(data)
-    #cursor
-    cur = con.cursor()
-
-    #execute query
-    cur.execute("insert into steamdata (name, Developer, Publisher, Genre) values (%s, %s, %s, %s)", (gname, gdev, gpub, ggenre) )
-    #rows = cur.fetchall()
-
-    #for r in rows:
-    #    print(f"charID: {r[0]} name: {r[1]}")
-
-
-    con.commit()
-    #close cursor
-    cur.close()
-
-    #close connection
-    con.close()
-
-#SteamSpy Data grabbing
-def data():
-    data_request = dict()
-    data_request['request'] = 'appdetails'
-    data_request['appid'] = '393380'
-
-    data = steamspypi.download(data_request)
-    connection(data)
-    gname = data['name']
-    gdev = data['developer']
-    gpub = data['publisher']
-    ggenre = data['genre']
-    print(data)
-    #print("%s, %s, %s, %s" % (gname, gdev, gpub, ggenre))
-
 # App startup.
 app = qapp(sys.argv)
 mainWindow = Login()
 widget = qtw.QStackedWidget()
+layout = QVBoxLayout()
 widget.addWidget(mainWindow)
+widget.setLayout(layout)
 widget.show()
 app.exec_()
