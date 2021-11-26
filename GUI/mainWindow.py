@@ -21,7 +21,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QtCore.QSize(952, 700))
-        MainWindow.setStyleSheet("background-color: rgb(54, 54, 54); background-image: url(C:\\Users\\patri\\source\\repos\\Python Test Programs\\GUI_TestingGrounds);")
+        MainWindow.setStyleSheet("background-color: rgb(54, 54, 54);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tableView = QtWidgets.QTableView(self.centralwidget)

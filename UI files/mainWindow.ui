@@ -26,7 +26,7 @@
    <string>Vapor</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(54, 54, 54); background-image: url(C:\Users\patri\source\repos\Python Test Programs\GUI_TestingGrounds);</string>
+   <string notr="true">background-color: rgb(54, 54, 54);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTableView" name="tableView">
