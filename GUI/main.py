@@ -5,7 +5,7 @@
 #-----------------------------------------------------------------------------------------------------------
 import sys 
 from mainLogin import Ui_Login_Dialog
-from createacc import Ui_Sign_Up_Dialog
+from createAcc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
 from PyQt5 import QtWidgets as qtw
