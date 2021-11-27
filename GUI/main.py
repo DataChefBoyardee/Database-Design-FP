@@ -68,10 +68,16 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
         username = self.uEdit.text()
         if self.pEdit.text() == self.pEdit_2.text():
             password = self.pEdit.text()
-            qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
-            login = Login()
-            widget.addWidget(login)
-            widget.setCurrentIndex(widget.currentIndex()+1)
+            #Check if username exists
+            Added = Check_User(username)
+            if Added == 1: 
+                Add_User(username, password)
+                qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
+                login = Login()
+                widget.addWidget(login)
+                widget.setCurrentIndex(widget.currentIndex()+1)
+            else:
+                qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
 
@@ -102,7 +108,7 @@ class Main_Window(qwin, Ui_MainWindow):
         self.windows.append(window)
 
 #Checks for username and password in database
-def Check_Login(username, password):
+def Check_Login(username, pw):
     print(username)
     con = psycopg2.connect(
         host="localhost", 
@@ -113,7 +119,7 @@ def Check_Login(username, password):
     )
 
     cur = con.cursor()
-    cur.execute("SELECT * FROM steam_account WHERE username = %s AND password = %s;", (username, password))
+    cur.execute("SELECT * FROM steam_account WHERE username = %s AND password = %s;", (username, pw))
     if (cur.fetchone() is not None == 1):
         cur.close()
         con.close()
@@ -122,8 +128,32 @@ def Check_Login(username, password):
         cur.close()
         con.close()
         return 2
-    
 
+#Checks if user exists in table    
+def Check_User(username):
+    con = psycopg2.connect(
+        host="localhost", 
+        database="FP",
+        user="postgres",
+        password="AWEsome1",
+        port=5432
+    )
+
+    cur = con.cursor()
+    cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username))
+    if (cur.fetchone() is not None == 1):
+        cur.close()
+        con.close()
+        return 1
+    else:
+        cur.close()
+        con.close()
+        return 2
+
+#Would add a username and password to database
+#WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
+def Add_User(username, pw):
+    print(username)
 
 # App startup.
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
