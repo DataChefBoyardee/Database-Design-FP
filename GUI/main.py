@@ -4,9 +4,11 @@
 #
 #-----------------------------------------------------------------------------------------------------------
 import sys 
+import psycopg2
+import steamspypi
 import os
 from mainLogin import Ui_Login_Dialog
-from createacc import Ui_Sign_Up_Dialog
+from createAcc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
 from PyQt5 import QtWidgets as qtw
@@ -31,7 +33,11 @@ class Login(qd, Ui_Login_Dialog):
         username = self.uEdit.text()
         password = self.pEdit.text()
 
-        if username == 'user' and password == 'pass':
+        #Username Validity Checker
+        Valid = Check_Login(username, password)
+        print(Valid)
+
+        if Valid == 1:
             qtw.QMessageBox.information(self, 'Success', 'You are logged in.')
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You did not log in.')
@@ -94,7 +100,31 @@ class Main_Window(qwin, Ui_MainWindow):
         window = filteredSearch()
         window.show()
         self.windows.append(window)
-        
+
+#Checks for username and password in database
+def Check_Login(username, password):
+    print(username)
+    con = psycopg2.connect(
+        host="localhost", 
+        database="FP",
+        user="postgres",
+        password="AWEsome1",
+        port=5432
+    )
+
+    cur = con.cursor()
+    cur.execute("SELECT * FROM steam_account WHERE username = %s AND password = %s;", (username, password))
+    if (cur.fetchone() is not None == 1):
+        cur.close()
+        con.close()
+        return 1
+    else:
+        cur.close()
+        con.close()
+        return 2
+    
+
+
 # App startup.
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 app = qapp(sys.argv)

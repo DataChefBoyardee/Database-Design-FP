@@ -54,13 +54,13 @@ def insert_game(appid):
     # print("%s\n" % tags)
 
     #do query
-    cur.execute("INSERT INTO product (product_id, name, developer, publisher, price, current_discount, positive_ratings, negative_ratings, genres, tags, initial_price) \
+    cur.execute("INSERT INTO product (product_id, name, developer, publisher, discounted_price, current_discount, positive_ratings, negative_ratings, genres, tags, initial_price) \
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
         ON CONFLICT (product_id) \
         DO \
             UPDATE SET developer = EXCLUDED.developer, \
                     publisher = EXCLUDED.publisher, \
-                    price = EXCLUDED.price, \
+                    discounted_price = EXCLUDED.discounted_price, \
                     current_discount = EXCLUDED.current_discount, \
                     positive_ratings = EXCLUDED.positive_ratings, \
                     negative_ratings = EXCLUDED.negative_ratings, \
@@ -71,7 +71,7 @@ con = psycopg2.connect(
         host="localhost", 
         database="steam",
         user="postgres",
-        password="PNorthern1",
+        password="AWEsome1",
         port=5432
     )
 
