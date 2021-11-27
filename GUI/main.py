@@ -71,7 +71,8 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
             #Check if username exists
             Added = Check_User(username)
             if Added == 1: 
-                Add_User(username, password)
+                                                                                                                #Uncomment Add_User when ready
+                #Add_User(username, password)
                 qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
                 login = Login()
                 widget.addWidget(login)
@@ -153,7 +154,21 @@ def Check_User(username):
 #Would add a username and password to database
 #WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
 def Add_User(username, pw):
-    print(username)
+    #print(username)
+    con = psycopg2.connect(
+        host="localhost", 
+        database="FP",
+        user="postgres",
+        password="AWEsome1",
+        port=5432
+    )
+
+    cur = con.cursor()
+    #This needs more values in it
+    cur.execute("INSERT into steam_account (username, password) values (%s, %s);", (username, pw))
+    con.commit()
+    cur.close()
+    con.close()
 
 # App startup.
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
