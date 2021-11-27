@@ -38,6 +38,8 @@ def insert_game(appid):
     genre = re.split(', ', genre)
     #tags
     tags = list(data['tags'].keys())
+    #initialprice
+    initial_price = data['initialprice']
 
     # # print game details
     # print("%s\n" % appid)
@@ -52,24 +54,24 @@ def insert_game(appid):
     # print("%s\n" % tags)
 
     #do query
-    cur.execute("INSERT INTO product (product_id, name, developer, publisher, price, current_discount, positive_ratings, negative_ratings, genres, tags) \
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
+    cur.execute("INSERT INTO product (product_id, name, developer, publisher, discounted_price, current_discount, positive_ratings, negative_ratings, genres, tags, initial_price) \
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
         ON CONFLICT (product_id) \
         DO \
             UPDATE SET developer = EXCLUDED.developer, \
                     publisher = EXCLUDED.publisher, \
-                    price = EXCLUDED.price, \
+                    discounted_price = EXCLUDED.discounted_price, \
                     current_discount = EXCLUDED.current_discount, \
                     positive_ratings = EXCLUDED.positive_ratings, \
                     negative_ratings = EXCLUDED.negative_ratings, \
                     genres = EXCLUDED.genres, \
-                    tags = EXCLUDED.tags;", (appid, name, developer, publisher, price, discount, positive, negative, genre, tags) )
+                    tags = EXCLUDED.tags;", (appid, name, developer, publisher, price, discount, positive, negative, genre, tags, initial_price) )
 
 con = psycopg2.connect(
         host="localhost", 
         database="steam",
         user="postgres",
-        password="PNorthern1",
+        password="AWEsome1",
         port=5432
     )
 
@@ -86,7 +88,7 @@ print(gappid)
 
 #insert game details one by one into products table
 for appid in gappid:
-    print("inserting %s", appid)
+    print("inserting %s", (appid))
     insert_game(appid)
     time.sleep(1)
     
@@ -97,13 +99,3 @@ cur.close()
 
 #close connection
 con.close()
-
-# data_request = dict()
-# data_request['request'] = 'appdetails'
-# data_request['appid'] = '1088850'
-
-# data = steamspypi.download(data_request)
-
-# hello = data['tags'].keys()
-# bye = list(hello)
-# print(bye[1])

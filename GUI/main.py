@@ -4,9 +4,11 @@
 #
 #-----------------------------------------------------------------------------------------------------------
 import sys 
+import psycopg2
+import steamspypi
 import os
 from mainLogin import Ui_Login_Dialog
-from createacc import Ui_Sign_Up_Dialog
+from createAcc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
 from PyQt5 import QtWidgets as qtw
@@ -31,7 +33,11 @@ class Login(qd, Ui_Login_Dialog):
         username = self.uEdit.text()
         password = self.pEdit.text()
 
-        if username == 'user' and password == 'pass':
+        #Username Validity Checker
+        Valid = Check_Login(username, password)
+        print(Valid)
+
+        if Valid == 1:
             qtw.QMessageBox.information(self, 'Success', 'You are logged in.')
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You did not log in.')
@@ -62,10 +68,17 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
         username = self.uEdit.text()
         if self.pEdit.text() == self.pEdit_2.text():
             password = self.pEdit.text()
-            qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
-            login = Login()
-            widget.addWidget(login)
-            widget.setCurrentIndex(widget.currentIndex()+1)
+            #Check if username exists
+            Added = Check_User(username)
+            if Added == 1: 
+                                                                                                                #Uncomment Add_User when ready
+                #Add_User(username, password)
+                qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
+                login = Login()
+                widget.addWidget(login)
+                widget.setCurrentIndex(widget.currentIndex()+1)
+            else:
+                qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
 
@@ -94,7 +107,69 @@ class Main_Window(qwin, Ui_MainWindow):
         window = filteredSearch()
         window.show()
         self.windows.append(window)
-        
+
+#Checks for username and password in database
+def Check_Login(username, pw):
+    print(username)
+    con = psycopg2.connect(
+        host="localhost", 
+        database="FP",
+        user="postgres",
+        password="AWEsome1",
+        port=5432
+    )
+
+    cur = con.cursor()
+    cur.execute("SELECT * FROM steam_account WHERE username = %s AND password = %s;", (username, pw))
+    if (cur.fetchone() is not None == 1):
+        cur.close()
+        con.close()
+        return 1
+    else:
+        cur.close()
+        con.close()
+        return 2
+
+#Checks if user exists in table    
+def Check_User(username):
+    con = psycopg2.connect(
+        host="localhost", 
+        database="FP",
+        user="postgres",
+        password="AWEsome1",
+        port=5432
+    )
+
+    cur = con.cursor()
+    cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username))
+    if (cur.fetchone() is not None == 1):
+        cur.close()
+        con.close()
+        return 1
+    else:
+        cur.close()
+        con.close()
+        return 2
+
+#Would add a username and password to database
+#WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
+def Add_User(username, pw):
+    #print(username)
+    con = psycopg2.connect(
+        host="localhost", 
+        database="FP",
+        user="postgres",
+        password="AWEsome1",
+        port=5432
+    )
+
+    cur = con.cursor()
+    #This needs more values in it
+    cur.execute("INSERT into steam_account (username, password) values (%s, %s);", (username, pw))
+    con.commit()
+    cur.close()
+    con.close()
+
 # App startup.
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 app = qapp(sys.argv)
