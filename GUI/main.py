@@ -11,7 +11,7 @@ from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
-from PyQt5.QtWidgets import QDialog as qd, QApplication as qapp, QLayout, QMainWindow as qwin, QVBoxLayout
+from PyQt5.QtWidgets import QDialog as qd, QApplication as qapp, QMainWindow as qwin, QVBoxLayout
 
 # Class implementing the main login page.
 class Login(qd, Ui_Login_Dialog):
@@ -96,9 +96,10 @@ class Main_Window(qwin, Ui_MainWindow):
         self.windows.append(window)
         
 # App startup.
+os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 app = qapp(sys.argv)
-qtw.qapp.setAttribute(qtc.Qt.AA_EnableHighDpiScaling, True)
-qtw.qapp.setAttribute(qtc.Qt.AA_UseHighDpiPixmaps, True)
+qapp.setAttribute(qtc.Qt.AA_EnableHighDpiScaling, True)
+qapp.setAttribute(qtc.Qt.AA_UseHighDpiPixmaps, True)
 mainWindow = Login()
 widget = qtw.QStackedWidget()
 layout = QVBoxLayout()
