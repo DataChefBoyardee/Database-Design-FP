@@ -3,11 +3,7 @@
 #                                           BOOTLEG STEAM
 #
 #-----------------------------------------------------------------------------------------------------------
-import sys 
-import psycopg2
-import steamspypi as spy
-import pandas as pd
-import os
+import sys, os, psycopg2, pandas as pd 
 from mainLogin import Ui_Login_Dialog
 from createAcc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
@@ -16,6 +12,8 @@ from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog as qd, QApplication as qapp, QMainWindow as qwin, QVBoxLayout
+
+
 
 # Class implementing the main login page.
 class Login(qd, Ui_Login_Dialog):
@@ -141,7 +139,7 @@ def Check_Login(username, pw):
         host="localhost", 
         database="steam",
         user="postgres",
-        password="AWEsome1",
+        password="AptechkaStrelok2!",
         port=5432
     )
 
@@ -206,7 +204,7 @@ def initializeTableView(tableType):
     host="localhost", 
     database="steam",
     user="postgres",
-    password="AWEsome1",
+    password="AptechkaStrelok2!",
     port=5432
     )
 
@@ -214,13 +212,13 @@ def initializeTableView(tableType):
     if (tableType == 'top100'):
 
         cur = con.cursor()
-        cur.execute("SELECT * FROM product")
+        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
         col_names = [desc[0] for desc in cur.description]
         retList = cur.fetchall()
         cur.close()
         con.close()
 
-        retFrame = pd.DataFrame(retList)
+        retFrame = pd.DataFrame(retList, columns = col_names)
         return retFrame
         
 # Class to define tables using PyQt5 abstract class.
@@ -250,7 +248,25 @@ class TableModel(qtc.QAbstractTableModel):
             if orientation == Qt.Vertical:
                 return str(self._data.index[section])
 
-    
+def Make_Order(Entry, username):
+    print("hello")
+    con = psycopg2.connect(
+    host="localhost", 
+    database="steam",
+    user="postgres",
+    password="AptechkaStrelok2!",
+    port=5432
+    )
+    ID = Entry['appid']
+    FP = Entry['final_price']
+    cur = con.cursor()
+    ordernum = "order ID"
+    ODnum = "order_details_id"
+    ct = "current time"
+    cur.execute("INSERT into orders (order_id, username, order_time, product_id) values (%s, %s, %s, %s)", (ordernum, username, ct, ID))
+    con.commit()
+    cur.execute("INSERT into order_details (order_details_id, product_id, order_id, final_price) values (%s, %s, %s, %s)", (ODnum, ID, ordernum, FP))
+    con.commit()
 
 # App startup.
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
