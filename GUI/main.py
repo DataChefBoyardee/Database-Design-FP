@@ -139,9 +139,9 @@ def Check_Login(username, pw):
     print(username)
     con = psycopg2.connect(
         host="localhost", 
-        database="FP",
+        database="steam",
         user="postgres",
-        password="AptechkaStrelok2!",
+        password="AWEsome1",
         port=5432
     )
 
@@ -162,7 +162,7 @@ def Check_Login(username, pw):
 def Check_User(username):
     con = psycopg2.connect(
         host="localhost", 
-        database="FP",
+        database="steam",
         user="postgres",
         password="AWEsome1",
         port=5432
@@ -186,7 +186,7 @@ def Add_User(username, pw):
     #print(username)
     con = psycopg2.connect(
         host="localhost", 
-        database="FP",
+        database="steam",
         user="postgres",
         password="AWEsome1",
         port=5432
@@ -204,9 +204,9 @@ def initializeTableView(tableType):
     # Connect to database.
     con = psycopg2.connect(
     host="localhost", 
-    database="FP",
+    database="steam",
     user="postgres",
-    password="AptechkaStrelok2!",
+    password="AWEsome1",
     port=5432
     )
 
