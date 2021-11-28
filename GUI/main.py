@@ -25,17 +25,16 @@ cur = con.cursor()
 
 
 # Class implementing the main login page.
-class Login(qd, Ui_Login_Dialog):
+class mainLogin(qd, Ui_Login_Dialog):
     def __init__(self):
-        super(Login, self).__init__()
+        super(mainLogin, self).__init__()
         self.setupUi(self)
         self.setFixedSize(600, 800)
 
         self.loginButton.clicked.connect(self.authenticate)
         self.signUpButton.clicked.connect(self.goToCreateAcc)
 
-    # Primitive login authentication.
-    # To do: Add one way hash to users table, and passwords column.
+    # Login authentication.
     def authenticate(self):
 
         username = self.uEdit.text()
@@ -43,7 +42,6 @@ class Login(qd, Ui_Login_Dialog):
 
         #Username Validity Checker
         Valid = Check_Login(username, password)
-        print(Valid)
 
         if Valid == 1:
             qtw.QMessageBox.information(self, 'Success', 'You are logged in.')
@@ -61,7 +59,7 @@ class Login(qd, Ui_Login_Dialog):
     def goToMainWindow(self):
         window = Main_Window()
         widget.addWidget(window)
-        widget.setCurrentIndex(widget.currentIndex()+1)
+        widget.setCurrentIndex(widget.currentIndex()+1)          
 
 # Class to implement the create account page.
 class CreateAcc(qd, Ui_Sign_Up_Dialog):
@@ -70,32 +68,27 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
         self.setupUi(self)
         self.setFixedSize(600, 800)
 
-        self.loginButton.clicked.connect(self.createAccFunction)
+        self.createAccountButton.clicked.connect(self.createAccFunction)
     
     # To do: add functionality for updating users table w/ psycopg2
     def createAccFunction(self):
         username = self.uEdit.text()
-        if self.pEdit.text() == self.pEdit_2.text():
+        country = self.cEdit.text()
+        if self.pEdit.text() == self.pEdit_2.text() and self.pEdit.text() is not "":
             password = self.pEdit.text()
             #Check if username exists
             Added = Check_User(username)
             if Added == 1: 
                                                                                                                 #Uncomment Add_User when ready
-                #Add_User(username, password)
+                #Add_User(username, password, country)
                 qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
-                login = Login()
+                login = mainLogin()
                 widget.addWidget(login)
                 widget.setCurrentIndex(widget.currentIndex()+1)
             else:
                 qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
-
-class filteredSearch(qd, Ui_filteredResults):
-    def __init__(self, parent=None):
-        super(filteredSearch, self).__init__(parent)
-        self.setupUi(self)
-        self.setFixedSize(800, 800)
 
 
 # Main window for app.
@@ -115,24 +108,37 @@ class Main_Window(qwin, Ui_MainWindow):
         self.filterButtonScore.clicked.connect(self.goToFilteredSearchScore)
         self.filterValveGames.clicked.connect(self.goToFilteredSearchValve)
 
-   # @qtc.pyqtSlot()
     def goToFilteredSearchSpecials(self):
-        window = filteredSearch(self)
+        window = filteredSearch()
         window.filterType.setText("Current Specials")
+        window.filter = "specials"
         window.show()
         self.windows.append(window)
     
     def goToFilteredSearchScore(self):
-        window = filteredSearch(self)
+        window = filteredSearch()
         window.filterType.setText("Top Scoring Games")
         window.show()
         self.windows.append(window)
 
     def goToFilteredSearchValve(self):
-        window = filteredSearch(self)
+        window = filteredSearch()
         window.filterType.setText("Games by Valve")
         window.show()
         self.windows.append(window)
+
+class filteredSearch(qd, Ui_filteredResults):
+    def __init__(self):
+        super(filteredSearch, self).__init__()
+        self.setupUi(self)
+        self.setFixedSize(1100, 800)
+
+        dataFrame = initializeTableView(self.filterType.text(), ' ')
+        if (dataFrame is not None == 1):
+            self.model = TableModel(dataFrame)
+            self.tableFilteredResults.setModel(self.model)
+
+
 
 #Checks for username and password in database
 def Check_Login(username, pw):
@@ -175,7 +181,16 @@ def initializeTableView(tableType, searchTerm):
         retFrame = pd.DataFrame(retList, columns = col_names)
         return retFrame
 
-    if (tableType == 'score'):
+    if (tableType == "Top Scoring Games"):
+        # add SQL queries here
+        cur = con.cursor()
+        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product WHERE ;")
+        col_names = [desc[0] for desc in cur.description]
+        retList = cur.fetchall()
+        retFrame = pd.DataFrame(retList, columns = col_names)
+        return retFrame
+
+    if (tableType == "Games by Valve"):
         # add SQL queries here
         cur = con.cursor()
         cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
@@ -184,16 +199,7 @@ def initializeTableView(tableType, searchTerm):
         retFrame = pd.DataFrame(retList, columns = col_names)
         return retFrame
 
-    if (tableType == 'valve'):
-        # add SQL queries here
-        cur = con.cursor()
-        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
-        col_names = [desc[0] for desc in cur.description]
-        retList = cur.fetchall()
-        retFrame = pd.DataFrame(retList, columns = col_names)
-        return retFrame
-
-    if (tableType == 'specials'):
+    if (tableType == "specials"):
         # add SQL queries here
         cur = con.cursor()
         cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
@@ -212,7 +218,6 @@ def initializeTableView(tableType, searchTerm):
         retFrame = pd.DataFrame(retList, columns = col_names)
         return retFrame
 
-        
 # Class to define tables using PyQt5 abstract class.
 class TableModel(qtc.QAbstractTableModel):
 
@@ -259,10 +264,10 @@ os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 app = qapp(sys.argv)
 qapp.setAttribute(qtc.Qt.AA_EnableHighDpiScaling, True)
 qapp.setAttribute(qtc.Qt.AA_UseHighDpiPixmaps, True)
-mainWindow = Login()
+login = mainLogin()
 widget = qtw.QStackedWidget()
 layout = QVBoxLayout()
-widget.addWidget(mainWindow)
+widget.addWidget(login)
 widget.setLayout(layout)
 widget.show()
 widget.setWindowTitle("Vapor")

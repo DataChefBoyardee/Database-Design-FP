@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>1100</width>
     <height>800</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true">background-color: rgb(54, 54, 54);</string>
   </property>
-  <widget class="QTableWidget" name="tableFilteredResults">
+  <widget class="QTableView" name="tableFilteredResults">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -74,10 +74,10 @@
   <widget class="QPushButton" name="score">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>110</y>
-     <width>101</width>
-     <height>23</height>
+     <x>790</x>
+     <y>280</y>
+     <width>300</width>
+     <height>100</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -90,10 +90,10 @@
   <widget class="QPushButton" name="specials">
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>110</y>
-     <width>101</width>
-     <height>23</height>
+     <x>790</x>
+     <y>150</y>
+     <width>300</width>
+     <height>100</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -106,10 +106,10 @@
   <widget class="QPushButton" name="valveFilter">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>110</y>
-     <width>101</width>
-     <height>23</height>
+     <x>790</x>
+     <y>410</y>
+     <width>300</width>
+     <height>100</height>
     </rect>
    </property>
    <property name="styleSheet">
