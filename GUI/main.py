@@ -136,9 +136,7 @@ class Main_Window(qwin, Ui_MainWindow):
 
 #Checks for username and password in database
 def Check_Login(username, pw):
-    print(username)
-    cur = con.cursor()
-    
+
     cur.execute("select * from steam_account where username = %s and password = %s;", (username, pw,))
     loginInfo = cur.fetchone()
     if (loginInfo[0] == username and loginInfo[1] == pw):
@@ -149,7 +147,6 @@ def Check_Login(username, pw):
 #Checks if user exists in table
 def Check_User(username):
 
-    cur = con.cursor()
     cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username))
     userInfo = cur.fetchone()
     if (userInfo[0] == username):
@@ -161,7 +158,6 @@ def Check_User(username):
 #WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
 def Add_User(username, pw):
 
-    cur = con.cursor()
     #This needs more values in it
     cur.execute("INSERT into steam_account (username, password) values (%s, %s);", (username, pw))
     con.commit()
