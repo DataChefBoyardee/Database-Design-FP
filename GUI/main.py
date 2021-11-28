@@ -5,7 +5,8 @@
 #-----------------------------------------------------------------------------------------------------------
 import sys 
 import psycopg2
-import steamspypi
+import steamspypi as spy
+import pandas as pd
 import os
 from mainLogin import Ui_Login_Dialog
 from createAcc import Ui_Sign_Up_Dialog
@@ -13,6 +14,7 @@ from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog as qd, QApplication as qapp, QMainWindow as qwin, QVBoxLayout
 
 # Class implementing the main login page.
@@ -23,7 +25,6 @@ class Login(qd, Ui_Login_Dialog):
         self.setFixedSize(600, 800)
 
         self.loginButton.clicked.connect(self.authenticate)
-        self.loginButton.clicked.connect(self.goToMainWindow)
         self.signUpButton.clicked.connect(self.goToCreateAcc)
 
     # Primitive login authentication.
@@ -39,6 +40,7 @@ class Login(qd, Ui_Login_Dialog):
 
         if Valid == 1:
             qtw.QMessageBox.information(self, 'Success', 'You are logged in.')
+            self.goToMainWindow()
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You did not log in.')
 
@@ -83,13 +85,13 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
             qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
 
 class filteredSearch(qd, Ui_filteredResults):
-    def __init__(self):
-        super(filteredSearch, self).__init__()
+    def __init__(self, parent=None):
+        super(filteredSearch, self).__init__(parent)
         self.setupUi(self)
         self.setFixedSize(800, 800)
 
 
-# Main window for app. Now with Skyrim memes!
+# Main window for app.
 class Main_Window(qwin, Ui_MainWindow):
     def __init__(self):
         super(Main_Window, self).__init__()
@@ -97,14 +99,38 @@ class Main_Window(qwin, Ui_MainWindow):
         self.setFixedSize(1100, 800)
         self.windows = []
 
-        self.filterButtonSpecials.clicked.connect(self.goToFilteredSearch)
-        self.filterButtonPositive.clicked.connect(self.goToFilteredSearch)
-        self.filterButtonNegative.clicked.connect(self.goToFilteredSearch)
-        self.filterValveGames.clicked.connect(self.goToFilteredSearch)
+        # Initialize the table view
+        dataFrame = initializeTableView('top100')
+        self.model = TableModel(dataFrame)
+        self.tableView.setModel(self.model)
+
+        self.filterButtonSpecials.clicked.connect(self.goToFilteredSearchSpecials)
+        self.filterButtonPositive.clicked.connect(self.goToFilteredSearchPositive)
+        self.filterButtonNegative.clicked.connect(self.goToFilteredSearchNegative)
+        self.filterValveGames.clicked.connect(self.goToFilteredSearchValve)
 
    # @qtc.pyqtSlot()
-    def goToFilteredSearch(self):
-        window = filteredSearch()
+    def goToFilteredSearchSpecials(self):
+        window = filteredSearch(self)
+        window.filterType.setText("Specials")
+        window.show()
+        self.windows.append(window)
+    
+    def goToFilteredSearchPositive(self):
+        window = filteredSearch(self)
+        window.filterType.setText("Top Positive")
+        window.show()
+        self.windows.append(window)
+
+    def goToFilteredSearchNegative(self):
+        window = filteredSearch(self)
+        window.filterType.setText("Top Negative")
+        window.show()
+        self.windows.append(window)
+
+    def goToFilteredSearchValve(self):
+        window = filteredSearch(self)
+        window.filterType.setText("Games by Valve")
         window.show()
         self.windows.append(window)
 
@@ -115,13 +141,15 @@ def Check_Login(username, pw):
         host="localhost", 
         database="FP",
         user="postgres",
-        password="AWEsome1",
+        password="AptechkaStrelok2!",
         port=5432
     )
 
     cur = con.cursor()
-    cur.execute("SELECT * FROM steam_account WHERE username = %s AND password = %s;", (username, pw))
-    if (cur.fetchone() is not None == 1):
+    
+    cur.execute("select * from steam_account where username = %s and password = %s;", (username, pw,))
+    loginInfo = cur.fetchone()
+    if (loginInfo[0] == username and loginInfo[1] == pw):
         cur.close()
         con.close()
         return 1
@@ -142,7 +170,8 @@ def Check_User(username):
 
     cur = con.cursor()
     cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username))
-    if (cur.fetchone() is not None == 1):
+    userInfo = cur.fetchone()
+    if (userInfo[0] == username):
         cur.close()
         con.close()
         return 1
@@ -170,6 +199,59 @@ def Add_User(username, pw):
     cur.close()
     con.close()
 
+def initializeTableView(tableType):
+
+    # Connect to database.
+    con = psycopg2.connect(
+    host="localhost", 
+    database="FP",
+    user="postgres",
+    password="AptechkaStrelok2!",
+    port=5432
+    )
+
+    # Checks the table view type.
+    if (tableType == 'top100'):
+
+        cur = con.cursor()
+        cur.execute("SELECT * FROM product")
+        col_names = [desc[0] for desc in cur.description]
+        retList = cur.fetchall()
+        cur.close()
+        con.close()
+
+        retFrame = pd.DataFrame(retList)
+        return retFrame
+        
+# Class to define tables using PyQt5 abstract class.
+class TableModel(qtc.QAbstractTableModel):
+
+    def __init__(self, data):
+        super(TableModel, self).__init__()
+        self._data = data
+
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            value = self._data.iloc[index.row(), index.column()]
+            return str(value)
+
+    def rowCount(self, index):
+        return self._data.shape[0]
+
+    def columnCount(self, index):
+        return self._data.shape[1]
+
+    def headerData(self, section, orientation, role):
+        # section is the index of the column/row.
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
+                return str(self._data.columns[section])
+
+            if orientation == Qt.Vertical:
+                return str(self._data.index[section])
+
+    
+
 # App startup.
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 app = qapp(sys.argv)
@@ -181,4 +263,5 @@ layout = QVBoxLayout()
 widget.addWidget(mainWindow)
 widget.setLayout(layout)
 widget.show()
-app.exec_()
+widget.setWindowTitle("Vapor")
+sys.exit(app.exec_())
