@@ -26,13 +26,13 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: rgb(255, 255, 255);</string>
+    <string notr="true">color: rgb(255, 255, 255); background: rgb(189, 189, 189)</string>
    </property>
   </widget>
   <widget class="QLabel" name="labelFiltered">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>220</x>
      <y>40</y>
      <width>201</width>
      <height>31</height>
@@ -71,7 +71,7 @@
     <string>[Insert filter button]</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="positive">
+  <widget class="QPushButton" name="score">
    <property name="geometry">
     <rect>
      <x>150</x>
@@ -84,7 +84,7 @@
     <string notr="true">color: rgb(255, 255, 255)</string>
    </property>
    <property name="text">
-    <string>Top Positive</string>
+    <string>Top Score</string>
    </property>
   </widget>
   <widget class="QPushButton" name="specials">
@@ -103,26 +103,10 @@
     <string>Specials</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="negative">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>110</y>
-     <width>101</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(255, 255, 255)</string>
-   </property>
-   <property name="text">
-    <string>Top Negative</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="valveFilter">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>270</x>
      <y>110</y>
      <width>101</width>
      <height>23</height>
