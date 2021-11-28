@@ -103,26 +103,19 @@ class Main_Window(qwin, Ui_MainWindow):
         self.tableView.setModel(self.model)
 
         self.filterButtonSpecials.clicked.connect(self.goToFilteredSearchSpecials)
-        self.filterButtonPositive.clicked.connect(self.goToFilteredSearchPositive)
-        self.filterButtonNegative.clicked.connect(self.goToFilteredSearchNegative)
+        self.filterButtonScore.clicked.connect(self.goToFilteredSearchScore)
         self.filterValveGames.clicked.connect(self.goToFilteredSearchValve)
 
    # @qtc.pyqtSlot()
     def goToFilteredSearchSpecials(self):
         window = filteredSearch(self)
-        window.filterType.setText("Specials")
+        window.filterType.setText("Current Specials")
         window.show()
         self.windows.append(window)
     
-    def goToFilteredSearchPositive(self):
+    def goToFilteredSearchScore(self):
         window = filteredSearch(self)
-        window.filterType.setText("Top Positive")
-        window.show()
-        self.windows.append(window)
-
-    def goToFilteredSearchNegative(self):
-        window = filteredSearch(self)
-        window.filterType.setText("Top Negative")
+        window.filterType.setText("Top Scoring Games")
         window.show()
         self.windows.append(window)
 
@@ -156,7 +149,7 @@ def Check_Login(username, pw):
         con.close()
         return 2
 
-#Checks if user exists in table    
+#Checks if user exists in table
 def Check_User(username):
     con = psycopg2.connect(
         host="localhost", 
@@ -197,7 +190,8 @@ def Add_User(username, pw):
     cur.close()
     con.close()
 
-def initializeTableView(tableType):
+
+def initializeTableView(tableType, searchTerm):
 
     # Connect to database.
     con = psycopg2.connect(
@@ -220,6 +214,19 @@ def initializeTableView(tableType):
 
         retFrame = pd.DataFrame(retList, columns = col_names)
         return retFrame
+    
+    #elif tableType == 'score':
+        # add SQL queries here
+
+    #elif tableType == 'valve':
+        # add SQL queries here
+
+    #elif tableType == 'specials':
+        # add SQL queries here
+    #elif tableType == 'search':
+        # add SQL queries here
+        # Use extra passed value to indicated search term.
+
         
 # Class to define tables using PyQt5 abstract class.
 class TableModel(qtc.QAbstractTableModel):

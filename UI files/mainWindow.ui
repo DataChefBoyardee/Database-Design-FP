@@ -34,12 +34,15 @@
      <rect>
       <x>10</x>
       <y>350</y>
-      <width>1081</width>
+      <width>701</width>
       <height>421</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255); background: rgb(189, 189, 189)</string>
+     <string notr="true">color: rgb(0, 0, 0); background: rgb(189, 189, 189)</string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QLineEdit" name="searchBar">
@@ -61,10 +64,10 @@
    <widget class="QPushButton" name="filterButtonSpecials">
     <property name="geometry">
      <rect>
-      <x>400</x>
-      <y>320</y>
-      <width>91</width>
-      <height>23</height>
+      <x>760</x>
+      <y>650</y>
+      <width>300</width>
+      <height>100</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -77,10 +80,10 @@
    <widget class="QPushButton" name="filterButtonScore">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>320</y>
-      <width>91</width>
-      <height>23</height>
+      <x>760</x>
+      <y>370</y>
+      <width>300</width>
+      <height>100</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -93,10 +96,10 @@
    <widget class="QPushButton" name="filterValveGames">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>320</y>
-      <width>101</width>
-      <height>21</height>
+      <x>760</x>
+      <y>510</y>
+      <width>300</width>
+      <height>100</height>
      </rect>
     </property>
     <property name="styleSheet">
