@@ -265,13 +265,21 @@ def Make_Order(Entry, username):
     ID = Entry['appid']
     FP = Entry['final_price']
     cur = con.cursor()
-    ordernum = "order ID"
-    ODnum = "order_details_id"
-    ct = "current time"
-    cur.execute("INSERT into orders (order_id, username, order_time, product_id) values (%s, %s, %s, %s)", (ordernum, username, ct, ID))
+    cur.execute("INSERT into orders (username, order_time) values (%s, CURRENT_TIMESTAMP)", (username))
     con.commit()
-    cur.execute("INSERT into order_details (order_details_id, product_id, order_id, final_price) values (%s, %s, %s, %s)", (ODnum, ID, ordernum, FP))
+
+    cur.execute("SELECT order_id FROM orders WHERE username = %s ORDER BY order_time DESC LIMIT 1", (username))
+    ordernum = cur.fetchone()
+
+    try:
+        cur.execute("INSERT into order_details (product_id, order_id, final_price) values (%s, %s, %s)", (ID, ordernum, FP))
+    except (Exception, psycopg2.DatabaseError) as ex:
+        #make order page spit this error out if return type is string, which this is
+        return ex
+    
     con.commit()
+    #success if 1, return type int
+    return 1
 
 # App startup.
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
