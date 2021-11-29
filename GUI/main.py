@@ -78,10 +78,8 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
         if self.pEdit.text() == self.pEdit_2.text() and self.pEdit.text() is not "":
             password = self.pEdit.text()
             #Check if username exists
-            Added = Check_User(username)
+            Added = Add_User(username, password, country)
             if Added == 1: 
-                                                                                                                #Uncomment Add_User when ready
-                Add_User(username, password, country)
                 qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
                 login = mainLogin()
                 widget.addWidget(login)
@@ -163,27 +161,26 @@ def Check_Login(username, pw):
     else:
         return 2
 
-#Checks if user exists in table
-def Check_User(username):
+# #Checks if user exists in table
+# def Check_User(username):
 
-    cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username,))
-    userInfo = cur.fetchone()
-    if (userInfo[0] == username):
-        return 1
-    else:
-        return 2
+#     cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username,))
+#     userInfo = cur.fetchone()
+#     if (userInfo[0] == username):
+#         return 1
+#     else:
+#         return 2
 
-#Would add a username and password to database
-#WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
+#Would add a user to database
 def Add_User(username, pw, country):
-
-    #This needs more values in it
     try:
         cur.execute("INSERT into steam_account (username, password, country_of_residence, steam_wallet) values (%s, %s, %s, 0);", (username, pw, country))
     except psycopg2.errors.UniqueViolation:
         #make popup that says username already exists
+        return 2
 
-        con.commit()
+    con.commit()
+    return 1
 
 
 def initializeTableView(tableType, searchTerm):
