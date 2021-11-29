@@ -9,6 +9,7 @@ from createAcc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
 from orderPage import Ui_orderPage
+from functools import partial
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
 from PyQt5.QtCore import Qt
@@ -36,7 +37,7 @@ class mainLogin(qd, Ui_Login_Dialog):
         self.signUpButton.clicked.connect(self.goToCreateAcc)
 
     # Login authentication.
-    def authenticate(self):
+    def authenticate(self, user):
 
         username = self.uEdit.text()
         password = self.pEdit.text()
@@ -58,7 +59,7 @@ class mainLogin(qd, Ui_Login_Dialog):
 
     # Opens main window.
     def goToMainWindow(self):
-        window = Main_Window()
+        window = Main_Window(self.uEdit.text())
         widget.addWidget(window)
         widget.setCurrentIndex(widget.currentIndex()+1)          
 
@@ -78,10 +79,12 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
         if self.pEdit.text() == self.pEdit_2.text() and self.pEdit.text() is not "":
             password = self.pEdit.text()
             #Check if username exists
-            Added = Add_User(username, password, country)
+            Added = Check_User(username)
             if Added == 1: 
+                                                                                                                #Uncomment Add_User when ready
+                Add_User(username, password, country)
                 qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
-                login = mainLogin()
+                login = mainLogin(username)
                 widget.addWidget(login)
                 widget.setCurrentIndex(widget.currentIndex()+1)
             else:
@@ -92,11 +95,11 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
 
 # Main window for app.
 class Main_Window(qwin, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self, username):
         super(Main_Window, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
-        self.widgetMain = qtw.QStackedWidget()
+        user = username
         self.windows = []
 
 
@@ -105,38 +108,39 @@ class Main_Window(qwin, Ui_MainWindow):
         self.model = TableModel(dataFrame)
         self.tableView.setModel(self.model)
 
-        self.filterButtonSpecials.clicked.connect(self.goToFilteredSearchSpecials)
-        self.filterButtonScore.clicked.connect(self.goToFilteredSearchScore)
-        self.filterValveGames.clicked.connect(self.goToFilteredSearchValve)
-        self.searchButton.clicked.connect(self.goToFilteredSearch)
+        self.filterButtonSpecials.clicked.connect(self.goToFilteredSearchSpecials(user))
+        self.filterButtonScore.clicked.connect(self.goToFilteredSearchScore(username))
+        self.filterValveGames.clicked.connect(self.goToFilteredSearchValve(username))
+        self.searchButton.clicked.connect(self.goToFilteredSearch(username))
 
-    def goToFilteredSearchSpecials(self):
-        window = filteredSearch("Current Specials", "", Main_Window)
+    def goToFilteredSearchSpecials(self, username):
+        window = filteredSearch("Current Specials", "", Main_Window, username)
         window.show()
         self.windows.append(window)
     
-    def goToFilteredSearchScore(self):
-        window = filteredSearch("Top Scoring Games", "", Main_Window)
+    def goToFilteredSearchScore(self, username):
+        window = filteredSearch("Top Scoring Games", "", Main_Window, username)
         window.show()
         self.windows.append(window)
 
-    def goToFilteredSearchValve(self):
-        window = filteredSearch("Games by Valve", "", Main_Window)
+    def goToFilteredSearchValve(self, username):
+        window = filteredSearch("Games by Valve", "", Main_Window, username)
         window.show()
         self.windows.append(window)
 
-    def goToFilteredSearch(self):
+    def goToFilteredSearch(self, username):
         searchTerm = self.searchBar.text()
-        window = filteredSearch("search", searchTerm, Main_Window)
+        window = filteredSearch("search", searchTerm, Main_Window, username)
         window.show()
         self.windows.append(window)
 
 
 class filteredSearch(qd, Ui_filteredResults):
-    def __init__(self, filtering, searchTerm, Main_Window):
+    def __init__(self, filtering, searchTerm, Main_Window, username):
         super(filteredSearch, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
+        self.windows = []
         if filtering == "search":
             self.filterType.setText(searchTerm)
         else:
@@ -146,10 +150,25 @@ class filteredSearch(qd, Ui_filteredResults):
         self.model = TableModel(dataFrame)
         self.tableFilteredResults.setModel(self.model)
 
+        self.orderButton.clicked.connect(self.goToOrderPage)
+    
+    def goToOrderPage(self):
+        order = self.orderEdit.text()
+        window = orderPage(order)
+        window.show()
+        self.windows.append(window)
+
+
 class orderPage(qd, Ui_orderPage):
-    def __init__(self):
+    def __init__(self, order):
         super(orderPage, self).__init__()
         self.setupUi(self)
+        self.setFixedSize(500, 500)
+
+        self.buttonBox.Ok.clicked.connect(self.makeOrder(order))
+    
+    #def makeOrder(self, order):
+        #going to do some stuff here
 
 #Checks for username and password in database
 def Check_Login(username, pw):
@@ -161,26 +180,27 @@ def Check_Login(username, pw):
     else:
         return 2
 
-# #Checks if user exists in table
-# def Check_User(username):
+#Checks if user exists in table
+def Check_User(username):
 
-#     cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username,))
-#     userInfo = cur.fetchone()
-#     if (userInfo[0] == username):
-#         return 1
-#     else:
-#         return 2
+    cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username,))
+    userInfo = cur.fetchone()
+    if (userInfo[0] == username):
+        return 1
+    else:
+        return 2
 
-#Would add a user to database
+#Would add a username and password to database
+#WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
 def Add_User(username, pw, country):
+
+    #This needs more values in it
     try:
         cur.execute("INSERT into steam_account (username, password, country_of_residence, steam_wallet) values (%s, %s, %s, 0);", (username, pw, country))
     except psycopg2.errors.UniqueViolation:
         #make popup that says username already exists
-        return 2
 
-    con.commit()
-    return 1
+        con.commit()
 
 
 def initializeTableView(tableType, searchTerm):
