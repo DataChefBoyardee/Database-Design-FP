@@ -275,7 +275,7 @@ def Make_Order(Entry, username):
         cur.execute("INSERT into order_details (product_id, order_id, final_price) values (%s, %s, %s)", (ID, ordernum, FP))
     except (Exception, psycopg2.DatabaseError) as ex:
         #make order page spit this error out if return type is string, which this is
-        return ex
+        return str(ex)
     
     con.commit()
     #success if 1, return type int
