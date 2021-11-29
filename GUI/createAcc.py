@@ -64,7 +64,7 @@ class Ui_Sign_Up_Dialog(object):
         self.cLabel.setObjectName("cLabel")
         self.cEdit = QtWidgets.QLineEdit(Sign_Up_Dialog)
         self.cEdit.setGeometry(QtCore.QRect(290, 460, 181, 31))
-        self.cEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.cEdit.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.cEdit.setObjectName("cEdit")
 
         self.retranslateUi(Sign_Up_Dialog)

@@ -87,7 +87,7 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
                 widget.addWidget(login)
                 widget.setCurrentIndex(widget.currentIndex()+1)
             else:
-                qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
+                qtw.QMessageBox.critical(self, 'Fail', 'This username already exists. Please choose a different username.')
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You\'re passwords didn\'t match, please reenter your password.')
 
@@ -166,7 +166,7 @@ def Check_Login(username, pw):
 #Checks if user exists in table
 def Check_User(username):
 
-    cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username))
+    cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username,))
     userInfo = cur.fetchone()
     if (userInfo[0] == username):
         return 1
@@ -182,9 +182,8 @@ def Add_User(username, pw, country):
         cur.execute("INSERT into steam_account (username, password, country_of_residence, steam_wallet) values (%s, %s, %s, 0);", (username, pw, country))
     except psycopg2.errors.UniqueViolation:
         #make popup that says username already exists
-        qtw.QMessageBox.critical('Fail', 'You\'re passwords didn\'t match, please reenter your password.')
 
-    con.commit()
+        con.commit()
 
 
 def initializeTableView(tableType, searchTerm):
