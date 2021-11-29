@@ -113,6 +113,7 @@ class Main_Window(qwin, Ui_MainWindow):
             scene.addItem(item)
             self.profilePic.setScene(scene)
 
+
         # Initialize the table view
         dataFrame = initializeTableView('top100', ' ')
         self.model = TableModel(dataFrame)
@@ -177,18 +178,27 @@ class orderPage(qd, Ui_orderPage):
         self.setupUi(self)
         self.setFixedSize(500, 500)
 
+        # Get the order details and display them.
+        global cur
+        cur.execute("SELECT name, developer, publisher, discounted_price FROM product WHERE name = %s;", (order, ))
+        orderDetails = cur.fetchone()
+        self.gameInsertLabel.setText(str(orderDetails[0]))
+        self.developerInsertLabel.setText(str(orderDetails[1]))
+        self.publisherInsertLabel.setText(str(orderDetails[2]))
+        self.priceInsertLabel.setText(str(orderDetails[3]))
+
         self.Cancel.clicked.connect(self.closeWindow)
         self.Ok.clicked.connect(partial(self.makeOrder, order))
     
     def makeOrder(self, order):
         global cur
-        #print(type(order))
         cur.execute("SELECT product_id FROM product WHERE name = %s;", (order, ))
         ID = cur.fetchone()
         cur.execute("SELECT discounted_price FROM product WHERE name = %s;", (order, ))
         FP = cur.fetchone()
         print(ID)
         Make_Order(ID, FP)
+        qtw.QMessageBox.information(self, 'Success', 'Your order has been made!')
         self.close()
 
     
@@ -300,11 +310,8 @@ class TableModel(qtc.QAbstractTableModel):
 
 def Make_Order(ID, FP):
     global username
-    print(type(username))
 
-    
     cur = con.cursor()
-    print(type(username))
     cur.execute("INSERT into orders (username, order_time) values (%s, CURRENT_TIMESTAMP)", (username, ))
     con.commit()
 
