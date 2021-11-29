@@ -112,28 +112,12 @@
      <string>Games by Valve</string>
     </property>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>20</y>
-      <width>291</width>
-      <height>251</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255)</string>
-    </property>
-    <property name="title">
-     <string>Welcome!</string>
-    </property>
-   </widget>
    <widget class="QListView" name="listGamesOwned">
     <property name="geometry">
      <rect>
       <x>390</x>
       <y>30</y>
-      <width>256</width>
+      <width>681</width>
       <height>241</height>
      </rect>
     </property>
@@ -152,6 +136,79 @@
     </property>
     <property name="text">
      <string>Search</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="welcomeLabel">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>30</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255)</string>
+    </property>
+    <property name="text">
+     <string>Welcome:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="userLabel">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>30</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255)</string>
+    </property>
+    <property name="text">
+     <string>[Insert Username]</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>270</y>
+      <width>341</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255)</string>
+    </property>
+    <property name="text">
+     <string>Search for a game or choose one of the filters to order.</string>
+    </property>
+   </widget>
+   <widget class="QGraphicsView" name="profilePic">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>70</y>
+      <width>260</width>
+      <height>190</height>
+     </rect>
     </property>
    </widget>
   </widget>
