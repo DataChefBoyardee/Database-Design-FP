@@ -33,11 +33,14 @@ class mainLogin(qd, Ui_Login_Dialog):
         self.setupUi(self)
         self.setFixedSize(600, 800)
 
-        self.loginButton.clicked.connect(self.authenticate)
+        username = self.uEdit.text()
+        password = self.pEdit.text()
+
+        self.loginButton.clicked.connect(partial(self.authenticate, username, password))
         self.signUpButton.clicked.connect(self.goToCreateAcc)
 
     # Login authentication.
-    def authenticate(self, user):
+    def authenticate(self, user, password):
 
         username = self.uEdit.text()
         password = self.pEdit.text()
@@ -47,7 +50,7 @@ class mainLogin(qd, Ui_Login_Dialog):
 
         if Valid == 1:
             qtw.QMessageBox.information(self, 'Success', 'You are logged in.')
-            self.goToMainWindow()
+            partial(self.goToMainWindow, user)
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You did not log in.')
 
@@ -58,8 +61,8 @@ class mainLogin(qd, Ui_Login_Dialog):
         widget.setCurrentIndex(widget.currentIndex()+1)
 
     # Opens main window.
-    def goToMainWindow(self):
-        window = Main_Window(self.uEdit.text())
+    def goToMainWindow(self, username):
+        window = Main_Window(username)
         widget.addWidget(window)
         widget.setCurrentIndex(widget.currentIndex()+1)          
 
@@ -99,7 +102,6 @@ class Main_Window(qwin, Ui_MainWindow):
         super(Main_Window, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
-        user = username
         self.windows = []
 
 
@@ -108,10 +110,10 @@ class Main_Window(qwin, Ui_MainWindow):
         self.model = TableModel(dataFrame)
         self.tableView.setModel(self.model)
 
-        self.filterButtonSpecials.clicked.connect(self.goToFilteredSearchSpecials(user))
-        self.filterButtonScore.clicked.connect(self.goToFilteredSearchScore(username))
-        self.filterValveGames.clicked.connect(self.goToFilteredSearchValve(username))
-        self.searchButton.clicked.connect(self.goToFilteredSearch(username))
+        self.filterButtonSpecials.clicked.connect(partial(self.goToFilteredSearchSpecials, username))
+        self.filterButtonScore.clicked.connect(partial(self.goToFilteredSearchScore, username))
+        self.filterValveGames.clicked.connect(partial(self.goToFilteredSearchValve, username))
+        self.searchButton.clicked.connect(partial(self.goToFilteredSearch, username))
 
     def goToFilteredSearchSpecials(self, username):
         window = filteredSearch("Current Specials", "", Main_Window, username)
