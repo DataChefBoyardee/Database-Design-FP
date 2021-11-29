@@ -196,16 +196,6 @@ def Check_Login(pw):
     else:
         return 2
 
-# #Checks if user exists in table
-# def Check_User():
-#     global username
-#     cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username,))
-#     userInfo = cur.fetchone()
-#     if (userInfo is not None):
-#         return 2
-#     else:
-#         return 1
-
 #Would add a username and password to database
 #WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
 def Add_User(pw, country):
@@ -236,7 +226,7 @@ def initializeTableView(tableType, searchTerm):
     if (tableType == "Top Scoring Games"):
         # add SQL queries here
         cur = con.cursor()
-        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
+        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres, CAST((CAST(positive_ratings AS DECIMAL(10, 2)) / (CAST(positive_ratings AS DECIMAL(10, 2)) + CAST(negative_ratings AS DECIMAL(10, 2))) * 100) AS DECIMAL(4, 2)) AS score FROM product ORDER BY score DESC;")
         col_names = [desc[0] for desc in cur.description]
         retList = cur.fetchall()
         retFrame = pd.DataFrame(retList, columns = col_names)
@@ -245,7 +235,7 @@ def initializeTableView(tableType, searchTerm):
     if (tableType == "Games by Valve"):
         # add SQL queries here
         cur = con.cursor()
-        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
+        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product WHERE developer = '{Valve}';")
         col_names = [desc[0] for desc in cur.description]
         retList = cur.fetchall()
         retFrame = pd.DataFrame(retList, columns = col_names)
@@ -254,7 +244,7 @@ def initializeTableView(tableType, searchTerm):
     if (tableType == "Current Specials"):
         # add SQL queries here
         cur = con.cursor()
-        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
+        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product WHERE current_discount > 0;")
         col_names = [desc[0] for desc in cur.description]
         retList = cur.fetchall()
         retFrame = pd.DataFrame(retList, columns = col_names)
@@ -264,7 +254,8 @@ def initializeTableView(tableType, searchTerm):
         # add SQL queries here
         # Use extra passed value to indicated search term.
         cur = con.cursor()
-        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
+        searchTerm = '%%%s%%' % searchTerm
+        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product WHERE name LIKE %s;", (searchTerm, ))
         col_names = [desc[0] for desc in cur.description]
         retList = cur.fetchall()
         retFrame = pd.DataFrame(retList, columns = col_names)
