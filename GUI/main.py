@@ -8,10 +8,11 @@ from mainLogin import Ui_Login_Dialog
 from createAcc import Ui_Sign_Up_Dialog
 from mainWindow import Ui_MainWindow
 from filteredSearch import Ui_filteredResults
+from orderPage import Ui_orderPage
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QDialog as qd, QApplication as qapp, QMainWindow as qwin, QVBoxLayout
+from PyQt5.QtWidgets import QAction, QDialog as qd, QApplication as qapp, QMainWindow as qwin, QVBoxLayout
 
 # Initialize database connection.
 con = psycopg2.connect(
@@ -80,7 +81,7 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
             Added = Check_User(username)
             if Added == 1: 
                                                                                                                 #Uncomment Add_User when ready
-                #Add_User(username, password, country)
+                Add_User(username, password, country)
                 qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
                 login = mainLogin()
                 widget.addWidget(login)
@@ -97,7 +98,9 @@ class Main_Window(qwin, Ui_MainWindow):
         super(Main_Window, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
+        self.widgetMain = qtw.QStackedWidget()
         self.windows = []
+
 
         # Initialize the table view
         dataFrame = initializeTableView('top100', ' ')
@@ -107,38 +110,48 @@ class Main_Window(qwin, Ui_MainWindow):
         self.filterButtonSpecials.clicked.connect(self.goToFilteredSearchSpecials)
         self.filterButtonScore.clicked.connect(self.goToFilteredSearchScore)
         self.filterValveGames.clicked.connect(self.goToFilteredSearchValve)
+        self.searchButton.clicked.connect(self.goToFilteredSearch)
 
     def goToFilteredSearchSpecials(self):
-        window = filteredSearch()
-        window.filterType.setText("Current Specials")
-        window.filter = "specials"
+        window = filteredSearch("Current Specials", "", Main_Window)
         window.show()
         self.windows.append(window)
     
     def goToFilteredSearchScore(self):
-        window = filteredSearch()
-        window.filterType.setText("Top Scoring Games")
+        window = filteredSearch("Top Scoring Games", "", Main_Window)
         window.show()
         self.windows.append(window)
 
     def goToFilteredSearchValve(self):
-        window = filteredSearch()
-        window.filterType.setText("Games by Valve")
+        window = filteredSearch("Games by Valve", "", Main_Window)
         window.show()
         self.windows.append(window)
 
+    def goToFilteredSearch(self):
+        searchTerm = self.searchBar.text()
+        window = filteredSearch("search", searchTerm, Main_Window)
+        window.show()
+        self.windows.append(window)
+
+
 class filteredSearch(qd, Ui_filteredResults):
-    def __init__(self):
+    def __init__(self, filtering, searchTerm, Main_Window):
         super(filteredSearch, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
+        if filtering == "search":
+            self.filterType.setText(searchTerm)
+        else:
+            self.filterType.setText(filtering)
 
-        dataFrame = initializeTableView(self.filterType.text(), ' ')
-        if (dataFrame is not None == 1):
-            self.model = TableModel(dataFrame)
-            self.tableFilteredResults.setModel(self.model)
+        dataFrame = initializeTableView(filtering, searchTerm)
+        self.model = TableModel(dataFrame)
+        self.tableFilteredResults.setModel(self.model)
 
-
+class orderPage(qd, Ui_orderPage):
+    def __init__(self):
+        super(orderPage, self).__init__()
+        self.setupUi(self)
 
 #Checks for username and password in database
 def Check_Login(username, pw):
@@ -169,7 +182,7 @@ def Add_User(username, pw, country):
         cur.execute("INSERT into steam_account (username, password, country_of_residence, steam_wallet) values (%s, %s, %s, 0);", (username, pw, country))
     except psycopg2.errors.UniqueViolation:
         #make popup that says username already exists
-        print("username already exists")
+        qtw.QMessageBox.critical('Fail', 'You\'re passwords didn\'t match, please reenter your password.')
 
     con.commit()
 
@@ -189,7 +202,7 @@ def initializeTableView(tableType, searchTerm):
     if (tableType == "Top Scoring Games"):
         # add SQL queries here
         cur = con.cursor()
-        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product WHERE ;")
+        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
         col_names = [desc[0] for desc in cur.description]
         retList = cur.fetchall()
         retFrame = pd.DataFrame(retList, columns = col_names)
@@ -204,7 +217,7 @@ def initializeTableView(tableType, searchTerm):
         retFrame = pd.DataFrame(retList, columns = col_names)
         return retFrame
 
-    if (tableType == "specials"):
+    if (tableType == "Current Specials"):
         # add SQL queries here
         cur = con.cursor()
         cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
@@ -213,7 +226,7 @@ def initializeTableView(tableType, searchTerm):
         retFrame = pd.DataFrame(retList, columns = col_names)
         return retFrame
         
-    if (tableType == 'search'):
+    if (tableType == "search"):
         # add SQL queries here
         # Use extra passed value to indicated search term.
         cur = con.cursor()
@@ -259,8 +272,6 @@ def Make_Order(Entry, username):
     ordernum = "order ID"
     ODnum = "order_details_id"
     ct = "current time"
-
-
     cur.execute("INSERT into orders (order_id, username, order_time, product_id) values (%s, %s, %s, %s)", (ordernum, username, ct, ID))
     con.commit()
     cur.execute("INSERT into order_details (order_details_id, product_id, order_id, final_price) values (%s, %s, %s, %s)", (ODnum, ID, ordernum, FP))
