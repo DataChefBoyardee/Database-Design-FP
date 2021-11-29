@@ -162,10 +162,15 @@ def Check_User(username):
 
 #Would add a username and password to database
 #WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
-def Add_User(username, pw):
+def Add_User(username, pw, country):
 
     #This needs more values in it
-    cur.execute("INSERT into steam_account (username, password) values (%s, %s);", (username, pw))
+    try:
+        cur.execute("INSERT into steam_account (username, password, country_of_residence, steam_wallet) values (%s, %s, %s, 0);", (username, pw, country))
+    except psycopg2.errors.UniqueViolation:
+        #make popup that says username already exists
+        print("username already exists")
+
     con.commit()
 
 
@@ -254,6 +259,8 @@ def Make_Order(Entry, username):
     ordernum = "order ID"
     ODnum = "order_details_id"
     ct = "current time"
+
+
     cur.execute("INSERT into orders (order_id, username, order_time, product_id) values (%s, %s, %s, %s)", (ordernum, username, ct, ID))
     con.commit()
     cur.execute("INSERT into order_details (order_details_id, product_id, order_id, final_price) values (%s, %s, %s, %s)", (ODnum, ID, ordernum, FP))
