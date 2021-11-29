@@ -11,31 +11,31 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Dialog(object):
-    def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
-        Dialog.resize(500, 500)
+class Ui_orderPage(object):
+    def setupUi(self, orderPage):
+        orderPage.setObjectName("orderPage")
+        orderPage.resize(500, 500)
         font = QtGui.QFont()
         font.setPointSize(12)
-        Dialog.setFont(font)
-        Dialog.setStyleSheet("background-color: rgb(54, 54, 54);")
-        self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
+        orderPage.setFont(font)
+        orderPage.setStyleSheet("background-color: rgb(54, 54, 54);")
+        self.buttonBox = QtWidgets.QDialogButtonBox(orderPage)
         self.buttonBox.setGeometry(QtCore.QRect(150, 420, 181, 32))
         self.buttonBox.setStyleSheet("color: rgb(255, 255, 255)")
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.label = QtWidgets.QLabel(Dialog)
+        self.label = QtWidgets.QLabel(orderPage)
         self.label.setGeometry(QtCore.QRect(170, 40, 171, 61))
         font = QtGui.QFont()
         font.setPointSize(12)
         self.label.setFont(font)
         self.label.setStyleSheet("color: rgb(255, 255, 255)")
         self.label.setObjectName("label")
-        self.listView = QtWidgets.QListView(Dialog)
+        self.listView = QtWidgets.QListView(orderPage)
         self.listView.setGeometry(QtCore.QRect(35, 140, 431, 181))
         self.listView.setObjectName("listView")
-        self.label_2 = QtWidgets.QLabel(Dialog)
+        self.label_2 = QtWidgets.QLabel(orderPage)
         self.label_2.setGeometry(QtCore.QRect(200, 380, 111, 21))
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -43,13 +43,13 @@ class Ui_Dialog(object):
         self.label_2.setStyleSheet("color: rgb(255, 255, 255)")
         self.label_2.setObjectName("label_2")
 
-        self.retranslateUi(Dialog)
-        self.buttonBox.accepted.connect(Dialog.accept)
-        self.buttonBox.rejected.connect(Dialog.reject)
-        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.retranslateUi(orderPage)
+        self.buttonBox.accepted.connect(orderPage.accept)
+        self.buttonBox.rejected.connect(orderPage.reject)
+        QtCore.QMetaObject.connectSlotsByName(orderPage)
 
-    def retranslateUi(self, Dialog):
+    def retranslateUi(self, orderPage):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Order Summary"))
-        self.label.setText(_translate("Dialog", "Order Summary:"))
-        self.label_2.setText(_translate("Dialog", "Confirm Order"))
+        orderPage.setWindowTitle(_translate("orderPage", "Order Summary"))
+        self.label.setText(_translate("orderPage", "Order Summary:"))
+        self.label_2.setText(_translate("orderPage", "Confirm Order"))
