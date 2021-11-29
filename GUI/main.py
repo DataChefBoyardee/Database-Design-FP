@@ -13,7 +13,8 @@ from functools import partial
 from PyQt5 import QtWidgets as qtw
 from PyQt5 import QtCore as qtc
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QAction, QDialog as qd, QApplication as qapp, QMainWindow as qwin, QVBoxLayout
+from PyQt5.QtWidgets import QAction as qa, QDialog as qd, QApplication as qapp, QMainWindow as qwin, QVBoxLayout
+from PyQt5.QtGui import QPixmap as qpm
 
 username = " "
 
@@ -101,7 +102,16 @@ class Main_Window(qwin, Ui_MainWindow):
         self.setupUi(self)
         self.setFixedSize(1100, 800)
         self.windows = []
+        self.userLabel.setText(username)
 
+        # Set the profile pic here.
+        image_path = "C:/Users/patri/source/repos/Python Test Programs/GUI_TestingGrounds/profile_pics/3324401-45jyzacf-v4.jpg"
+        if os.path.isfile(image_path):
+            scene = qtw.QGraphicsScene(self)
+            pixmap = qpm(image_path)
+            item = qtw.QGraphicsPixmapItem(pixmap)
+            scene.addItem(item)
+            self.profilePic.setScene(scene)
 
         # Initialize the table view
         dataFrame = initializeTableView('top100', ' ')
