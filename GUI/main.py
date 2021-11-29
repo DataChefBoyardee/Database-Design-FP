@@ -15,6 +15,8 @@ from PyQt5 import QtCore as qtc
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QAction, QDialog as qd, QApplication as qapp, QMainWindow as qwin, QVBoxLayout
 
+username = " "
+
 # Initialize database connection.
 con = psycopg2.connect(
 host="localhost", 
@@ -25,7 +27,6 @@ port=5432
 )
 cur = con.cursor()
 
-
 # Class implementing the main login page.
 class mainLogin(qd, Ui_Login_Dialog):
     def __init__(self):
@@ -33,24 +34,22 @@ class mainLogin(qd, Ui_Login_Dialog):
         self.setupUi(self)
         self.setFixedSize(600, 800)
 
-        username = self.uEdit.text()
-        password = self.pEdit.text()
-
-        self.loginButton.clicked.connect(partial(self.authenticate, username, password))
+        self.loginButton.clicked.connect(self.authenticate)
         self.signUpButton.clicked.connect(self.goToCreateAcc)
 
     # Login authentication.
-    def authenticate(self, user, password):
+    def authenticate(self):
 
+        global username
         username = self.uEdit.text()
         password = self.pEdit.text()
 
         #Username Validity Checker
-        Valid = Check_Login(username, password)
+        Valid = Check_Login(password)
 
         if Valid == 1:
             qtw.QMessageBox.information(self, 'Success', 'You are logged in.')
-            partial(self.goToMainWindow, user)
+            self.goToMainWindow()
         else:
             qtw.QMessageBox.critical(self, 'Fail', 'You did not log in.')
 
@@ -61,10 +60,10 @@ class mainLogin(qd, Ui_Login_Dialog):
         widget.setCurrentIndex(widget.currentIndex()+1)
 
     # Opens main window.
-    def goToMainWindow(self, username):
-        window = Main_Window(username)
+    def goToMainWindow(self):
+        window = Main_Window()
         widget.addWidget(window)
-        widget.setCurrentIndex(widget.currentIndex()+1)          
+        widget.setCurrentIndex(widget.currentIndex()+1)
 
 # Class to implement the create account page.
 class CreateAcc(qd, Ui_Sign_Up_Dialog):
@@ -77,17 +76,16 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
     
     # To do: add functionality for updating users table w/ psycopg2
     def createAccFunction(self):
+        global username
         username = self.uEdit.text()
         country = self.cEdit.text()
-        if self.pEdit.text() == self.pEdit_2.text() and self.pEdit.text() is not "":
+        if self.pEdit.text() == self.pEdit_2.text() and self.pEdit.text() != "":
             password = self.pEdit.text()
             #Check if username exists
-            Added = Check_User(username)
+            Added = Add_User(password, country)
             if Added == 1: 
-                                                                                                                #Uncomment Add_User when ready
-                Add_User(username, password, country)
                 qtw.QMessageBox.information(self, 'Success', 'You\'re account has been created, you may now login!')
-                login = mainLogin(username)
+                login = mainLogin()
                 widget.addWidget(login)
                 widget.setCurrentIndex(widget.currentIndex()+1)
             else:
@@ -98,7 +96,7 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
 
 # Main window for app.
 class Main_Window(qwin, Ui_MainWindow):
-    def __init__(self, username):
+    def __init__(self):
         super(Main_Window, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
@@ -110,35 +108,35 @@ class Main_Window(qwin, Ui_MainWindow):
         self.model = TableModel(dataFrame)
         self.tableView.setModel(self.model)
 
-        self.filterButtonSpecials.clicked.connect(partial(self.goToFilteredSearchSpecials, username))
-        self.filterButtonScore.clicked.connect(partial(self.goToFilteredSearchScore, username))
-        self.filterValveGames.clicked.connect(partial(self.goToFilteredSearchValve, username))
-        self.searchButton.clicked.connect(partial(self.goToFilteredSearch, username))
+        self.filterButtonSpecials.clicked.connect(self.goToFilteredSearchSpecials)
+        self.filterButtonScore.clicked.connect(self.goToFilteredSearchScore)
+        self.filterValveGames.clicked.connect(self.goToFilteredSearchValve)
+        self.searchButton.clicked.connect(self.goToFilteredSearch)
 
-    def goToFilteredSearchSpecials(self, username):
-        window = filteredSearch("Current Specials", "", Main_Window, username)
+    def goToFilteredSearchSpecials(self):
+        window = filteredSearch("Current Specials", "", Main_Window)
         window.show()
         self.windows.append(window)
     
-    def goToFilteredSearchScore(self, username):
-        window = filteredSearch("Top Scoring Games", "", Main_Window, username)
+    def goToFilteredSearchScore(self):
+        window = filteredSearch("Top Scoring Games", "", Main_Window)
         window.show()
         self.windows.append(window)
 
-    def goToFilteredSearchValve(self, username):
-        window = filteredSearch("Games by Valve", "", Main_Window, username)
+    def goToFilteredSearchValve(self):
+        window = filteredSearch("Games by Valve", "", Main_Window)
         window.show()
         self.windows.append(window)
 
-    def goToFilteredSearch(self, username):
+    def goToFilteredSearch(self):
         searchTerm = self.searchBar.text()
-        window = filteredSearch("search", searchTerm, Main_Window, username)
+        window = filteredSearch("search", searchTerm, Main_Window)
         window.show()
         self.windows.append(window)
 
 
 class filteredSearch(qd, Ui_filteredResults):
-    def __init__(self, filtering, searchTerm, Main_Window, username):
+    def __init__(self, filtering, searchTerm, Main_Window):
         super(filteredSearch, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
@@ -152,9 +150,10 @@ class filteredSearch(qd, Ui_filteredResults):
         self.model = TableModel(dataFrame)
         self.tableFilteredResults.setModel(self.model)
 
-        self.orderButton.clicked.connect(self.goToOrderPage)
+        order = self.orderEdit.text()
+        self.orderButton.clicked.connect(partial(self.goToOrderPage, order))
     
-    def goToOrderPage(self):
+    def goToOrderPage(self, order):
         order = self.orderEdit.text()
         window = orderPage(order)
         window.show()
@@ -164,17 +163,32 @@ class filteredSearch(qd, Ui_filteredResults):
 class orderPage(qd, Ui_orderPage):
     def __init__(self, order):
         super(orderPage, self).__init__()
+        #print(type(order))
         self.setupUi(self)
         self.setFixedSize(500, 500)
 
-        self.buttonBox.Ok.clicked.connect(self.makeOrder(order))
+        self.Cancel.clicked.connect(self.closeWindow)
+        self.Ok.clicked.connect(partial(self.makeOrder, order))
     
-    #def makeOrder(self, order):
-        #going to do some stuff here
+    def makeOrder(self, order):
+        global cur
+        #print(type(order))
+        cur.execute("SELECT product_id FROM product WHERE name = %s;", (order, ))
+        ID = cur.fetchone()
+        cur.execute("SELECT discounted_price FROM product WHERE name = %s;", (order, ))
+        FP = cur.fetchone()
+        print(ID)
+        Make_Order(ID, FP)
+        self.close()
+
+    
+    def closeWindow(self):
+        self.close()
 
 #Checks for username and password in database
-def Check_Login(username, pw):
+def Check_Login(pw):
 
+    global username
     cur.execute("select * from steam_account where username = %s and password = %s;", (username, pw,))
     loginInfo = cur.fetchone()
     if (loginInfo[0] == username and loginInfo[1] == pw):
@@ -182,27 +196,29 @@ def Check_Login(username, pw):
     else:
         return 2
 
-#Checks if user exists in table
-def Check_User(username):
-
-    cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username,))
-    userInfo = cur.fetchone()
-    if (userInfo[0] == username):
-        return 1
-    else:
-        return 2
+# #Checks if user exists in table
+# def Check_User():
+#     global username
+#     cur.execute("SELECT * FROM steam_account WHERE username = %s;", (username,))
+#     userInfo = cur.fetchone()
+#     if (userInfo is not None):
+#         return 2
+#     else:
+#         return 1
 
 #Would add a username and password to database
 #WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
-def Add_User(username, pw, country):
+def Add_User(pw, country):
+    global username
 
-    #This needs more values in it
     try:
         cur.execute("INSERT into steam_account (username, password, country_of_residence, steam_wallet) values (%s, %s, %s, 0);", (username, pw, country))
     except psycopg2.errors.UniqueViolation:
         #make popup that says username already exists
+        return 2
 
-        con.commit()
+    con.commit()
+    return 1
 
 
 def initializeTableView(tableType, searchTerm):
@@ -281,20 +297,21 @@ class TableModel(qtc.QAbstractTableModel):
             if orientation == Qt.Vertical:
                 return str(self._data.index[section])
 
-def Make_Order(Entry, username):
-    print("hello")
+def Make_Order(ID, FP):
+    global username
+    print(type(username))
 
-    ID = Entry['appid']
-    FP = Entry['final_price']
+    
     cur = con.cursor()
-    cur.execute("INSERT into orders (username, order_time) values (%s, CURRENT_TIMESTAMP)", (username))
+    print(type(username))
+    cur.execute("INSERT into orders (username, order_time) values (%s, CURRENT_TIMESTAMP)", (username, ))
     con.commit()
 
-    cur.execute("SELECT order_id FROM orders WHERE username = %s ORDER BY order_time DESC LIMIT 1", (username))
+    cur.execute("SELECT order_id FROM orders WHERE username = %s ORDER BY order_time DESC LIMIT 1", (username, ))
     ordernum = cur.fetchone()
 
     try:
-        cur.execute("INSERT into order_details (product_id, order_id, final_price) values (%s, %s, %s)", (ID, ordernum, FP))
+        cur.execute("INSERT into order_details (product_id, order_id, final_price) values (%s, %s, %s)", (ID, ordernum, FP, ))
     except (Exception, psycopg2.DatabaseError) as ex:
         #make order page spit this error out if return type is string, which this is
         return str(ex)
