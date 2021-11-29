@@ -158,7 +158,7 @@
     <string>Enter Game Here</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="orderButton">
    <property name="geometry">
     <rect>
      <x>280</x>
