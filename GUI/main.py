@@ -151,7 +151,7 @@ class filteredSearch(qd, Ui_filteredResults):
         super(filteredSearch, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
-        self.windows = []
+        self.filterStack = qtw.QStackedWidget()
         if filtering == "search":
             self.filterType.setText(searchTerm)
         else:
@@ -163,7 +163,16 @@ class filteredSearch(qd, Ui_filteredResults):
 
         order = self.orderEdit.text()
         self.orderButton.clicked.connect(partial(self.goToOrderPage, order))
+        self.specials.clicked.connect(partial(self.updateFilter, "Current Specials"))
+        self.score.clicked.connect(partial(self.updateFilter, "Top Scoring Games"))
+        self.valveFilter.clicked.connect(partial(self.updateFilter, "Games by Valve"))
     
+    def updateFilter(self, filterType):
+        window = filteredSearch(filterType, ' ', Main_Window)
+        self.filterStack.addWidget(window)
+        self.filterStack.show()
+        self.filterStack.setCurrentIndex(widget.currentIndex()+1)
+        
     def goToOrderPage(self, order):
         order = self.orderEdit.text()
         window = orderPage(order)
