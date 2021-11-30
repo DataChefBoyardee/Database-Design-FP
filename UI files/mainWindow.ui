@@ -34,7 +34,7 @@
      <rect>
       <x>10</x>
       <y>350</y>
-      <width>701</width>
+      <width>1081</width>
       <height>421</height>
      </rect>
     </property>
@@ -67,10 +67,10 @@
    <widget class="QPushButton" name="filterButtonSpecials">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>650</y>
+      <x>730</x>
+      <y>170</y>
       <width>300</width>
-      <height>100</height>
+      <height>60</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -83,10 +83,10 @@
    <widget class="QPushButton" name="filterButtonScore">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>370</y>
+      <x>730</x>
+      <y>80</y>
       <width>300</width>
-      <height>100</height>
+      <height>60</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -99,10 +99,10 @@
    <widget class="QPushButton" name="filterValveGames">
     <property name="geometry">
      <rect>
-      <x>760</x>
-      <y>510</y>
+      <x>730</x>
+      <y>260</y>
       <width>300</width>
-      <height>100</height>
+      <height>60</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -110,16 +110,6 @@
     </property>
     <property name="text">
      <string>Games by Valve</string>
-    </property>
-   </widget>
-   <widget class="QListView" name="listGamesOwned">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>30</y>
-      <width>681</width>
-      <height>241</height>
-     </rect>
     </property>
    </widget>
    <widget class="QPushButton" name="searchButton">
@@ -141,7 +131,7 @@
    <widget class="QLabel" name="welcomeLabel">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>230</x>
       <y>30</y>
       <width>111</width>
       <height>31</height>
@@ -162,7 +152,7 @@
    <widget class="QLabel" name="userLabel">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>330</x>
       <y>30</y>
       <width>181</width>
       <height>31</height>
@@ -183,7 +173,7 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>180</x>
       <y>270</y>
       <width>341</width>
       <height>21</height>
@@ -204,11 +194,32 @@
    <widget class="QGraphicsView" name="profilePic">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>210</x>
       <y>70</y>
       <width>260</width>
       <height>190</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>20</y>
+      <width>100</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255)</string>
+    </property>
+    <property name="text">
+     <string>Filters</string>
     </property>
    </widget>
   </widget>
