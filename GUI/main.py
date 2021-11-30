@@ -230,9 +230,9 @@ class orderPage(qd, Ui_orderPage):
 def Check_Login(pw):
 
     global username
-    cur.execute("select * from steam_account where username = %s and password = %s;", (username, pw,))
+    cur.execute("select 1 from steam_account where username = %s and password = %s;", (username, pw,))
     loginInfo = cur.fetchone()
-    if (loginInfo[0] == username and loginInfo[1] == pw):
+    if (loginInfo is not None):
         return 1
     else:
         return 2
