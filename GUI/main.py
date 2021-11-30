@@ -213,8 +213,13 @@ class orderPage(qd, Ui_orderPage):
         ID = cur.fetchone()
         cur.execute("SELECT discounted_price FROM product WHERE name = %s;", (order, ))
         FP = cur.fetchone()
-        Make_Order(ID, FP)
-        qtw.QMessageBox.information(self, 'Success', 'Your order has been made!')
+        checks = Make_Order(ID, FP)
+
+        # Shows a message box if the order was successful or not.
+        if (checks == 1):
+            qtw.QMessageBox.information(self, 'Success', 'Your order has been made!')
+        else:
+            qtw.QMessageBox.critical(self, 'Fail', "This game is already in you're library!")
         self.close()
 
     
@@ -341,7 +346,11 @@ def Make_Order(ID, FP):
     
     con.commit()
     #success if 1, return type int
-    return 1
+
+    if (cur.rowcount < 1):
+        return 1
+    else:
+        return 2
 
 # App startup.
 os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
