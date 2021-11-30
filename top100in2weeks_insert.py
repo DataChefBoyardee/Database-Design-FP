@@ -40,6 +40,8 @@ def insert_game(appid):
     tags = list(data['tags'].keys())
     #initialprice
     initial_price = data['initialprice']
+    #average_2_weeks
+    average_2_weeks = data['average_2weeks']
 
     # # print game details
     # print("%s\n" % appid)
@@ -54,8 +56,8 @@ def insert_game(appid):
     # print("%s\n" % tags)
 
     #do query
-    cur.execute("INSERT INTO product (product_id, name, developer, publisher, discounted_price, current_discount, positive_ratings, negative_ratings, genres, tags, initial_price) \
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
+    cur.execute("INSERT INTO product (product_id, name, developer, publisher, discounted_price, current_discount, positive_ratings, negative_ratings, genres, tags, initial_price, average_2_weeks) \
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
         ON CONFLICT (product_id) \
         DO \
             UPDATE SET developer = EXCLUDED.developer, \
@@ -65,13 +67,15 @@ def insert_game(appid):
                     positive_ratings = EXCLUDED.positive_ratings, \
                     negative_ratings = EXCLUDED.negative_ratings, \
                     genres = EXCLUDED.genres, \
-                    tags = EXCLUDED.tags;", (appid, name, developer, publisher, price, discount, positive, negative, genre, tags, initial_price) )
+                    tags = EXCLUDED.tags \
+                    initial_price = EXCLUDED.initial_price \
+                    average_2_weeks = EXCLUDED.average_2_weeks;", (appid, name, developer, publisher, price, discount, positive, negative, genre, tags, initial_price, average_2_weeks) )
 
 con = psycopg2.connect(
         host="localhost", 
         database="steam",
         user="postgres",
-        password="AWEsome1",
+        password="PNorthern1",
         port=5432
     )
 
@@ -86,7 +90,7 @@ data = steamspypi.download(data_request)
 gappid = list(data.keys())
 print(gappid)
 
-#insert game details one by one into products table
+# insert game details one by one into products table
 for appid in gappid:
     print("inserting %s", (appid))
     insert_game(appid)
