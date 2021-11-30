@@ -338,16 +338,13 @@ def Make_Order(ID, FP):
     cur.execute("SELECT order_id FROM orders WHERE username = %s ORDER BY order_time DESC LIMIT 1", (username, ))
     ordernum = cur.fetchone()
 
-    try:
-        cur.execute("INSERT into order_details (product_id, order_id, final_price) values (%s, %s, %s)", (ID, ordernum, FP, ))
-    except (Exception, psycopg2.DatabaseError) as ex:
-        #make order page spit this error out if return type is string, which this is
-        return str(ex)
+    cur.execute("INSERT into order_details (product_id, order_id, final_price) values (%s, %s, %s)", (ID, ordernum, FP, ))
     
-    con.commit()
-    #success if 1, return type int
+    cur.execute("SELECT 1 FROM orders WHERE order_id = %s", (ordernum, ))
+    ret = cur.fetchone()
 
-    if (cur.rowcount < 1):
+    con.commit()
+    if (ret is not None):
         return 1
     else:
         return 2
