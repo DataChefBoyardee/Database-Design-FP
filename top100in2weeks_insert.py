@@ -60,7 +60,7 @@ def insert_game(appid):
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) \
         ON CONFLICT (product_id) \
         DO \
-            UPDATE SET name = EXCLUDED.name \
+            UPDATE SET name = EXCLUDED.name, \
                     developer = EXCLUDED.developer, \
                     publisher = EXCLUDED.publisher, \
                     discounted_price = EXCLUDED.discounted_price, \
@@ -69,14 +69,14 @@ def insert_game(appid):
                     negative_ratings = EXCLUDED.negative_ratings, \
                     genres = EXCLUDED.genres, \
                     tags = EXCLUDED.tags, \
-                    initial_price = EXCLUDED.initial_price \
+                    initial_price = EXCLUDED.initial_price, \
                     average_2_weeks = EXCLUDED.average_2_weeks;", (appid, name, developer, publisher, price, discount, positive, negative, genre, tags, initial_price, average_2_weeks) )
 
 con = psycopg2.connect(
         host="localhost", 
         database="steam",
         user="postgres",
-        password="pass",
+        password="PNorthern1",
         port=5432
     )
 
