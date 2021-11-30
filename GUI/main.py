@@ -75,7 +75,7 @@ class CreateAcc(qd, Ui_Sign_Up_Dialog):
 
         self.createAccountButton.clicked.connect(self.createAccFunction)
     
-    # To do: add functionality for updating users table w/ psycopg2
+    # Helper function that takes a signal and initiates the process of adding an account to the database.
     def createAccFunction(self):
         global username
         username = self.uEdit.text()
@@ -104,7 +104,7 @@ class Main_Window(qwin, Ui_MainWindow):
         self.windows = []
         self.userLabel.setText(username)
 
-        # Set the profile pic here.
+        # Sets a profile pic here.
         image_path = "C:/Users/patri/source/repos/Python Test Programs/GUI_TestingGrounds/profile_pics/3324401-45jyzacf-v4.jpg"
         if os.path.isfile(image_path):
             scene = qtw.QGraphicsScene(self)
@@ -119,11 +119,13 @@ class Main_Window(qwin, Ui_MainWindow):
         self.model = TableModel(dataFrame)
         self.tableView.setModel(self.model)
 
+        # Signals used to open windows based on a button press.
         self.filterButtonSpecials.clicked.connect(self.goToFilteredSearchSpecials)
         self.filterButtonScore.clicked.connect(self.goToFilteredSearchScore)
         self.filterValveGames.clicked.connect(self.goToFilteredSearchValve)
         self.searchButton.clicked.connect(self.goToFilteredSearch)
 
+    # Below are functions corresponding to the signal emitted by a filter button press.
     def goToFilteredSearchSpecials(self):
         window = filteredSearch("Current Specials", "", Main_Window)
         window.show()
@@ -145,45 +147,50 @@ class Main_Window(qwin, Ui_MainWindow):
         window.show()
         self.windows.append(window)
 
-
+# Class implementing the filteredSearch window.
 class filteredSearch(qd, Ui_filteredResults):
     def __init__(self, filtering, searchTerm, Main_Window):
         super(filteredSearch, self).__init__()
         self.setupUi(self)
         self.setFixedSize(1100, 800)
+        self.windows = []
         self.filterStack = qtw.QStackedWidget()
+        # Small checker for whether a search term is used or generic filter.
         if filtering == "search":
             self.filterType.setText(searchTerm)
         else:
             self.filterType.setText(filtering)
 
+        # Initializes the table of filtered results based on value passed.
         dataFrame = initializeTableView(filtering, searchTerm)
         self.model = TableModel(dataFrame)
         self.tableFilteredResults.setModel(self.model)
 
+        # Various signals for the filter buttons and order button.
         order = self.orderEdit.text()
         self.orderButton.clicked.connect(partial(self.goToOrderPage, order))
         self.specials.clicked.connect(partial(self.updateFilter, "Current Specials"))
         self.score.clicked.connect(partial(self.updateFilter, "Top Scoring Games"))
         self.valveFilter.clicked.connect(partial(self.updateFilter, "Games by Valve"))
     
+    # Function that opens a new window corresponding to the signal emitted by a button.
     def updateFilter(self, filterType):
         window = filteredSearch(filterType, ' ', Main_Window)
         self.filterStack.addWidget(window)
         self.filterStack.show()
         self.filterStack.setCurrentIndex(widget.currentIndex()+1)
-        
+
+    # Function to open the order page.   
     def goToOrderPage(self, order):
         order = self.orderEdit.text()
         window = orderPage(order)
         window.show()
         self.windows.append(window)
 
-
+# Class implementing the order page.
 class orderPage(qd, Ui_orderPage):
     def __init__(self, order):
         super(orderPage, self).__init__()
-        #print(type(order))
         self.setupUi(self)
         self.setFixedSize(500, 500)
 
@@ -199,13 +206,13 @@ class orderPage(qd, Ui_orderPage):
         self.Cancel.clicked.connect(self.closeWindow)
         self.Ok.clicked.connect(partial(self.makeOrder, order))
     
+    # Helper function that passes order details on to Make_Order function.
     def makeOrder(self, order):
         global cur
         cur.execute("SELECT product_id FROM product WHERE name = %s;", (order, ))
         ID = cur.fetchone()
         cur.execute("SELECT discounted_price FROM product WHERE name = %s;", (order, ))
         FP = cur.fetchone()
-        print(ID)
         Make_Order(ID, FP)
         qtw.QMessageBox.information(self, 'Success', 'Your order has been made!')
         self.close()
@@ -225,28 +232,26 @@ def Check_Login(pw):
     else:
         return 2
 
-#Would add a username and password to database
-#WARNING, this is a To-Do, but you cannot just send username and password, you need more attributes
+# Adds a username and password to database.
 def Add_User(pw, country):
     global username
 
     try:
         cur.execute("INSERT into steam_account (username, password, country_of_residence, steam_wallet) values (%s, %s, %s, 0);", (username, pw, country))
     except psycopg2.errors.UniqueViolation:
-        #make popup that says username already exists
         return 2
 
     con.commit()
     return 1
 
-
+# Helper function that initializes a pandas dataframe to be used as the model for QTableView.
 def initializeTableView(tableType, searchTerm):
 
     # Checks the table view type.
     if (tableType == 'top100'):
 
         cur = con.cursor()
-        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product;")
+        cur.execute("SELECT name, developer, publisher, discounted_price, positive_ratings, negative_ratings, genres FROM product ORDER BY average_2_weeks DESC LIMIT 100;")
         col_names = [desc[0] for desc in cur.description]
         retList = cur.fetchall()
         retFrame = pd.DataFrame(retList, columns = col_names)
@@ -317,6 +322,7 @@ class TableModel(qtc.QAbstractTableModel):
             if orientation == Qt.Vertical:
                 return str(self._data.index[section])
 
+# Helper function that completes the process of adding an order to the database.
 def Make_Order(ID, FP):
     global username
 
