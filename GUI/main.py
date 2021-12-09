@@ -1,6 +1,13 @@
 #-----------------------------------------------------------------------------------------------------------
 #
-#                                           BOOTLEG STEAM
+#           This program is a final project for a course in database design.
+#           It mimics some basic functions of a video game distribution platform,
+#           similar to Steam.
+#
+#           A lot of features are unfinished for now, but hopefully this can be used
+#           as a learning tool for using Qt and PostgreSQL.
+#
+#           Developed by Patrick Cook, Kaden Lischalk, and Joseph Flitz.
 #
 #-----------------------------------------------------------------------------------------------------------
 import sys, os, psycopg2, pandas as pd 
@@ -23,7 +30,7 @@ con = psycopg2.connect(
 host="localhost", 
 database="steam",
 user="postgres",
-password="AptechkaStrelok2!",
+password="[Insert Database Password Here.]",
 port=5432
 )
 cur = con.cursor()
