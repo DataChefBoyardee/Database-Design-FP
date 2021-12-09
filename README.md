@@ -3,9 +3,11 @@
 This is basically just a knock-off version of Steam, 
 however the data that can be used with it is ripped 
 straight from Steam thanks to SteamSpy and the fantastic
-API and libraries created by Sergey Galyonkin, as well as
-the folks who created psycopg2 which allows our code to
-interact with databases directly.
+API and libraries created by Sergey Galyonkin. This project
+was made possible by the folks who created psycopg2 which 
+allows our code to interact with databases directly. Big
+thanks to them, and if you're interested in making anyhting
+that uses PostgreSQL in Python, check them out!
 
 This program requires PostgreSQL, and pgAdmin to create
 the initial database. You can download both here:
