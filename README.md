@@ -7,7 +7,10 @@ API and libraries created by Sergey Galyonkin. This project
 was made possible by the folks who created psycopg2 which 
 allows our code to interact with databases directly. Big
 thanks to them, and if you're interested in making anyhting
-that uses PostgreSQL in Python, check them out!
+that uses PostgreSQL in Python, check them out! The GUI was
+created using PyQt5, which is built off of the Qt framework.
+Big thanks to the developers at Qt for making their GUI tools
+open source!
 
 This program requires PostgreSQL, and pgAdmin to create
 the initial database. You can download both here:
