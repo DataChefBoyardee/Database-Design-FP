@@ -17,9 +17,6 @@ the initial database. You can download both here:
 
 https://www.postgresql.org/
 
-In order for psycopg2 to work, only Python version 3.9 and earlier can be used, 
-until any compatibility issues are finally resolved.
-
 To begin, create a database in pgAdmin called "steam", without the quotes.
 The backup file, "steam.backup", can then be used to restore the schema created,
 along with any views and triggers contained within the actual database.
